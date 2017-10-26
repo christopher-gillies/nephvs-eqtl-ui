@@ -1,1 +1,1 @@
-# nephvs-ui
+# nephvs-eqtl-ui
