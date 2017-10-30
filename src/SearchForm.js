@@ -4,6 +4,9 @@ import './SearchForm.css'
 import {Button} from 'react-bootstrap'
 import { withRouter } from 'react-router-dom'
 
+//Investigate https://github.com/moroshko/react-autosuggest
+//It appears to not be possible to fire the handleChange when there are no matches
+
 class SearchForm extends Component {
 
 
@@ -15,23 +18,47 @@ class SearchForm extends Component {
     }
     // This binding is necessary to make `this` work in the callback
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleChange = this.handleChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleItemSelect = this.handleItemSelect.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  handleChange(queryVal) {
+  handleKeyDown(event) {
+    switch (event.keyCode) {
+      case 13: // ENTER
+          console.log(this.state);
+          //submit
+          this.handleSubmit(new Event("submit"));
+          event.preventDefault();
+        break;
+      default:
+        ;
+      }
+  }
+
+  handleItemSelect(item) {
+    if(item !== null) {
+      this.handleInputChange(item.value)
+    }
+  }
+
+  handleInputChange(queryVal) {
     if(queryVal !== null && queryVal !== "") {
       this.setState( prevState => ( {
-        query: queryVal.value
-      }))
+        query: queryVal
+        //this is the callback function for the setState event completing
+      }), () => (    console.log(this.state) ))
     } else {
       this.setState( prevState => ( {
         query: ""
       }))
     }
+
+
   }
 
   handleSubmit(event) {
-    if(this.state.query != "") {
+    if(this.state.query !== "") {
       this.props.history.push("/searchResult/" + this.state.query)
     } else {
       alert("Please specify search criteria!")
@@ -71,11 +98,15 @@ class SearchForm extends Component {
             className="width-100"
             name="form-field-name"
             options={this.props.options}
-            onChange={this.handleChange}
+            onChange={this.handleItemSelect}
+            onInputChange={this.handleInputChange}
+            onInputKeyDown={this.handleKeyDown}
             placeholder="Search for a gene or variant..."
             arrowRenderer={() => null}
             noResultsText={false}
             value={this.state.query}
+            autoload={false}
+            openOnClick={false}
         />
         </div>
         {submit}
