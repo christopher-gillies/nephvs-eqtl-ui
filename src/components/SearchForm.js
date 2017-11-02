@@ -86,7 +86,7 @@ class SearchForm extends Component {
     if(this.props.header === true) {
       submit = (<button type="submit" className="btn btn-primary">Search</button>)
       heading = null;
-      formStyle="form-inline my-2 my-lg-0",
+      formStyle="form-inline my-2 my-lg-0";
       inputProps.placeholder = "Enter query"
     }
 

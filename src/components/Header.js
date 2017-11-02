@@ -5,12 +5,14 @@ import {
 } from 'react-router-dom'
 import SearchFormState from '../containers/SearchFormState'
 import './Header.css'
+import { withRouter } from 'react-router'
 
 class Header extends Component {
   render() {
 
     let search = null;
-    if(this.props.showSearch === true) {
+    //don't display searchbox if on the first page
+    if(this.props.location.pathname !== "/") {
       search = (
         <li>
           <SearchFormState header={true} options={this.props.options} />
@@ -35,8 +37,7 @@ class Header extends Component {
 }
 
 Header.propTypes = {
-  name: PropTypes.string,
-  showSearch: PropTypes.bool
+  name: PropTypes.string
 };
 
-export default Header;
+export default withRouter(Header);

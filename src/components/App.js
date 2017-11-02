@@ -35,7 +35,7 @@ class App extends Component {
     return (
       <Router>
       <div>
-        <Header title="NephVS eQTL Browser" showSearch={true} options={options} />
+        <Header title="NephVS eQTL Browser" options={options} />
         <div className="container">
             <Route exact path="/" render={SearchFormPage}/>
             <Route path="/about" component={About}/>
