@@ -53,8 +53,9 @@ class SearchForm extends Component {
   handleSubmit(event) {
     if(this.props.query !== "") {
       this.props.history.push("/searchResult/" + this.props.query)
+      this.props.handleSearchError("");
     } else {
-      alert("Please specify search criteria!")
+      this.props.handleSearchError("Please specify search criteria");
     }
     event.preventDefault();
   }
@@ -83,17 +84,38 @@ class SearchForm extends Component {
 
     let formStyle = "";
 
+    let error = null;
+
+    if(this.props.errorMessage !== "") {
+      error = (
+        <div className="alert alert-danger" role="alert">
+          {this.props.errorMessage}
+        </div>);
+    }
+
     if(this.props.header === true) {
       submit = (<button type="submit" className="btn btn-primary">Search</button>)
       heading = null;
       formStyle="form-inline my-2 my-lg-0";
       inputProps.placeholder = "Enter query"
+
+      if(this.props.errorMessage !== "") {
+        error = (
+            <div className="alert alert-danger form-control m-0 p-2">
+              {this.props.errorMessage}
+            </div>
+          );
+      }
+
     }
+
+
 
     return(
       <div>
       {heading}
       <form onSubmit={this.handleSubmit} className={formStyle}>
+        {error}
         <Autosuggest
           suggestions={this.props.suggestions}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}

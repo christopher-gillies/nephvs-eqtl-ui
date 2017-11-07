@@ -7,24 +7,32 @@ const searchForm = (state = {}, action) => {
   switch(action.type) {
     case SET_SEARCH_QUERY:
       state_res = {
-        ...state,
-        query: action.query
-      }
+        ...state
+      };
+      state_res[action.key] = {
+          ...state_res[action.key],
+                query: action.query
+              };
       break;
 
     case SET_SEARCH_ERROR:
       state_res = {
-        ...state,
-        showErrorMessage: action.showErrorMessage,
-        errorMessage: action.errorMessage
+        ...state
       }
+      state_res[action.key] = {
+        ...state_res[action.key],
+                errorMessage: action.errorMessage
+              };
       break;
 
     case SET_SUGGESTIONS:
       state_res = {
-        ...state,
-        suggestions: action.suggestions
+        ...state
       }
+      state_res[action.key] = {
+        ...state_res[action.key],
+                suggestions: action.suggestions
+              };
       break;
 
 

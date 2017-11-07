@@ -15,7 +15,7 @@ class Header extends Component {
     if(this.props.location.pathname !== "/") {
       search = (
         <li>
-          <SearchFormState header={true} options={this.props.options} />
+          <SearchFormState header={true} stateKey="header" options={this.props.options} />
         </li>
     );
     }

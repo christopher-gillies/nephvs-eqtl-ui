@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import searchForm from './searchForm'
-
+import searchResult from './searchResult'
 
 /*
 Example state::
@@ -18,6 +18,7 @@ Example state::
 
 const nephqtlApp = combineReducers({
   searchForm,
+  searchResult
 })
 
 export default nephqtlApp

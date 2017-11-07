@@ -7,7 +7,8 @@ import {
 import './App.css';
 import Header from './Header'
 import SearchFormState from '../containers/SearchFormState'
-import SearchResult from './SearchResult'
+import SearchResultState from '../containers/SearchResultState'
+import PairResult from './PairResult'
 import About from './About'
 
 
@@ -19,7 +20,7 @@ function SearchFormPage(props) {
   ];
 
   return(
-      <SearchFormState {...props} options={options}/>
+      <SearchFormState {...props} options={options} stateKey="main"/>
   )
 }
 
@@ -39,7 +40,8 @@ class App extends Component {
         <div className="container">
             <Route exact path="/" render={SearchFormPage}/>
             <Route path="/about" component={About}/>
-            <Route path={`/searchResult/:query`} component={SearchResult}/>
+            <Route path={`/searchResult/:query`} component={SearchResultState}/>
+            <Route path={`/pairResult/tissue/:tissue/gene/:gene/variant/:variant`} component={PairResult}/>
         </div>
       </div>
       </Router>
