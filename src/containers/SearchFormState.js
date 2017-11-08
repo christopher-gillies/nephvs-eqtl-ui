@@ -4,12 +4,15 @@ import { setSearchQuery } from '../actions'
 import { setSuggestions } from '../actions'
 import { setSearchError } from '../actions'
 import { withRouter } from 'react-router'
+import QueryService from '../services/QueryService'
 
 const mapStateToProps = (state, ownProps) => {
   return ({
     query: state.searchForm[ownProps.stateKey].query,
     suggestions: state.searchForm[ownProps.stateKey].suggestions,
-    errorMessage: state.searchForm[ownProps.stateKey].errorMessage
+    errorMessage: state.searchForm[ownProps.stateKey].errorMessage,
+    options: state.gene.symbols,
+    queryService: new QueryService(),
   });
 }
 

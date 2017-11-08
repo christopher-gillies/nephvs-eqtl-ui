@@ -11,7 +11,6 @@ import SearchResultState from '../containers/SearchResultState'
 import PairResult from './PairResult'
 import About from './About'
 
-
 function SearchFormPage(props) {
   let options = [
     { value: 'INF2' },
@@ -27,6 +26,11 @@ function SearchFormPage(props) {
 
 
 class App extends Component {
+
+  constructor(props){
+    super(props)
+  }
+
   render() {
     let options = [
       { value: 'INF2' },
