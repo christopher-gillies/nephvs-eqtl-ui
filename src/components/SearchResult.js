@@ -13,10 +13,10 @@ class SearchResult extends Component {
   componentWillReceiveProps = (nextProps) => {
     //Make subsequent calls here
     console.log("SearchResult componentWillReceiveProps")
-    console.log(nextProps)
+    //console.log(nextProps)
     if(nextProps.query !== this.props.query) {
       console.log("make ajax call")
-      this.props.submitQuery(this.props.query);
+      this.props.submitQuery(nextProps.query);
     }
   }
 
@@ -30,7 +30,7 @@ class SearchResult extends Component {
 
     return(
       <div>
-      <h1>Result for: {this.props.query}</h1>
+      <h1>Result for: {this.props.query.toUpperCase()}</h1>
 
       <ul className="nav nav-tabs">
         <li onClick={() => this.onTabClick('glom')} className="nav-item"><a className={ this.props.currentTab === "glom" ? "nav-link active" : "nav-link"}>Glomerulus</a></li>
