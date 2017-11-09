@@ -127,12 +127,14 @@ class SearchForm extends Component {
 
     let error = null;
 
+
     if(this.props.errorMessage !== "") {
       error = (
         <div className="alert alert-danger" role="alert">
           {this.props.errorMessage}
         </div>);
     }
+
 
     if(this.props.header === true) {
       submit = (<button type="submit" className="btn btn-primary">Search</button>)

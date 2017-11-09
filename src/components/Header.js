@@ -5,14 +5,21 @@ import {
 } from 'react-router-dom'
 import SearchFormState from '../containers/SearchFormState'
 import './Header.css'
-import { withRouter } from 'react-router'
+//import { withRouter } from 'react-router'
 
 class Header extends Component {
   render() {
-
+    let busy = null;
+    if(this.props.isFetching === true) {
+      busy = (
+        <li>
+          <i className="fa fa-spinner fa-spin fa-2x fa-fw"></i>
+        </li>
+      );
+    }
     let search = null;
     //don't display searchbox if on the first page
-    if(this.props.location.pathname !== "/") {
+    if(this.props.pathname !== "/") {
       search = (
         <li>
           <SearchFormState header={true} stateKey="header" options={this.props.options} />
@@ -25,6 +32,7 @@ class Header extends Component {
   <div className="collapse navbar-collapse">
     <Link className="navbar-brand" to="/">{this.props.title}</Link>
     <ul className="navbar-nav ml-auto">
+      {busy}
       {search}
       <li className="nav-item"><a className="nav-link" href="http://nephvs.org">NephVS</a></li>
       <li className="nav-item"><Link className="nav-link" to="/about">About</Link></li>
@@ -37,7 +45,8 @@ class Header extends Component {
 }
 
 Header.propTypes = {
-  name: PropTypes.string
+  title: PropTypes.string
 };
 
-export default withRouter(Header);
+//export default withRouter(Header);
+export default Header;

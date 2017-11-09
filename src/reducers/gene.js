@@ -7,12 +7,18 @@ function gene(state={}, action) {
   switch(action.type) {
 
     case REQUEST_ALL_GENE_SYMBOLS:
+      state_res = {
+        ...state,
+        symbols: [],
+        isFetching: true
+      };
       break;
     case RECEIVE_ALL_GENE_SYMBOLS:
       state_res = {
         ...state,
-        symbols: action.symbols
-      }
+        symbols: action.symbols,
+        isFetching: false
+      };
       break;
     default:
       break;

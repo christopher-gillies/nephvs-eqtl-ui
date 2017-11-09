@@ -1,11 +1,16 @@
 import { connect } from 'react-redux'
 import { setTab } from '../actions'
-import { withRouter } from 'react-router'
+//import { withRouter } from 'react-router'
 import SearchResult from '../components/SearchResult'
 
-const mapStateToProps = (state, ownProps) => ({
-  currentTab: state.searchResult.currentTab
-})
+const mapStateToProps = (state, ownProps) => {
+  //console.log("SearchResult map state to props")
+  return {
+    currentTab: state.searchResult.currentTab,
+    query: ownProps.match.params.query
+  }
+}
+
 
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -17,6 +22,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 const SearchResultState = connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(SearchResult))
+)(SearchResult)
 
 export default SearchResultState

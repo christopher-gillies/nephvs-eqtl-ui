@@ -7,6 +7,9 @@ import { SET_TAB } from "./consts.js"
 import { REQUEST_ALL_GENE_SYMBOLS } from "./consts.js"
 import { RECEIVE_ALL_GENE_SYMBOLS } from "./consts.js"
 
+import QueryService from '../services/QueryService';
+let queryService = new QueryService();
+
 export const setSearchQuery = (query, key) => ({
   type: SET_SEARCH_QUERY,
   query: query,
@@ -47,8 +50,9 @@ function receiveAllGeneSymbols(json) {
 
 export function fetchAllGeneSymbols() {
   return function(dispatch) {
-    dispatch(requestAllGeneSymbols())
-    return fetch(`http://localhost:8080/gene/symbols`)
+    dispatch(requestAllGeneSymbols());
+    let url = queryService.makeQeury("gene/symbols");
+    return fetch(url)
       .then(response => {
         let jsonRes = response.json();
         return jsonRes;

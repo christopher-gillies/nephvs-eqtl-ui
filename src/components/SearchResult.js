@@ -41,6 +41,20 @@ var matrixeQTLResTub = [
 
 class SearchResult extends Component {
 
+  componentDidMount = () =>  {
+    //Call first ajax request here
+    console.log("SearchResult Mounted")
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    //Make subsequent calls here
+    console.log("SearchResult componentWillReceiveProps")
+    console.log(nextProps)
+    if(nextProps.query !== this.props.query) {
+      console.log("make ajax call")
+    }
+  }
+
   onTabClick = (tab) => {
     this.props.handleSetTab(tab)
   }
@@ -51,7 +65,7 @@ class SearchResult extends Component {
 
     return(
       <div>
-      <h1>Result for: {this.props.match.params.query}</h1>
+      <h1>Result for: {this.props.query}</h1>
 
       <ul className="nav nav-tabs">
         <li onClick={() => this.onTabClick('glom')} className="nav-item"><a className={ this.props.currentTab === "glom" ? "nav-link active" : "nav-link"}>Glomerulus</a></li>

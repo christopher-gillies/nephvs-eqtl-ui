@@ -3,8 +3,8 @@ import SearchForm from '../components/SearchForm'
 import { setSearchQuery } from '../actions'
 import { setSuggestions } from '../actions'
 import { setSearchError } from '../actions'
-import { withRouter } from 'react-router'
 import QueryService from '../services/QueryService'
+import { withRouter } from 'react-router-dom'
 
 const mapStateToProps = (state, ownProps) => {
   return ({
@@ -12,6 +12,7 @@ const mapStateToProps = (state, ownProps) => {
     suggestions: state.searchForm[ownProps.stateKey].suggestions,
     errorMessage: state.searchForm[ownProps.stateKey].errorMessage,
     options: state.gene.symbols,
+    isFetching: state.gene.isFetching,
     queryService: new QueryService(),
   });
 }
@@ -30,9 +31,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 })
 
 //add with router so that we can get link information always
-const SearchFormState = connect(
+const SearchFormState = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(SearchForm))
+)(SearchForm));
 
 export default SearchFormState
