@@ -1,49 +1,13 @@
 import React, { Component } from 'react';
 import './SearchForm.css'
 import ResultTable from './ResultTable'
-var matrixeQTLResGlom = [
-  {
-    entrez: 1,
-    symbol: "inf2",
-    snp: "1:123",
-    t_stat: -5,
-    beta: -1,
-    p_val: 0.01
-  },
-  {
-    entrez: 1,
-    symbol: "inf2",
-    snp: "1:1234",
-    t_stat: -5,
-    beta: -1,
-    p_val: 0.0001
-  },
-  {
-    entrez: 1,
-    symbol: "inf2",
-    snp: "1:1235",
-    t_stat: -5,
-    beta: -1,
-    p_val: 0.001
-  }
-];
-
-var matrixeQTLResTub = [
-  {
-    entrez: 1,
-    symbol: "inf2",
-    snp: "1:123",
-    t_stat: -5,
-    beta: -1,
-    p_val: 0.01
-  },
-];
 
 class SearchResult extends Component {
 
   componentDidMount = () =>  {
     //Call first ajax request here
     console.log("SearchResult Mounted")
+    this.props.submitQuery(this.props.query);
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -52,6 +16,7 @@ class SearchResult extends Component {
     console.log(nextProps)
     if(nextProps.query !== this.props.query) {
       console.log("make ajax call")
+      this.props.submitQuery(this.props.query);
     }
   }
 
@@ -72,7 +37,7 @@ class SearchResult extends Component {
         <li onClick={() => this.onTabClick('tub')} className="nav-item"><a className={ this.props.currentTab === "tub" ? "nav-link active" : "nav-link"}>Tubulointerstitial</a></li>
       </ul>
 
-        <ResultTable data={ this.props.currentTab === "glom" ?  matrixeQTLResGlom : matrixeQTLResTub}
+        <ResultTable maxRows={10} data={ this.props.currentTab === "glom" ?  this.props.glomResults : this.props.tubResults}
           tissue={this.props.currentTab} />
 
       </div>

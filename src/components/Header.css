@@ -1,3 +1,9 @@
 .header_search_width {
   width: 200px;
 }
+
+.header_logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 5px;
+}

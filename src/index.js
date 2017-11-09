@@ -26,7 +26,9 @@ let initState = {
     }
   },
   searchResult: {
-    currentTab: "glom"
+    currentTab: "glom",
+    glomResults: [],
+    tubResults: []
   },
   gene: {
     symbols: []

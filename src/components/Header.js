@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom'
 import SearchFormState from '../containers/SearchFormState'
 import './Header.css'
-//import { withRouter } from 'react-router'
+import logo from '../eQTLBrowser_Logo.svg'
 
 class Header extends Component {
   render() {
@@ -30,7 +30,7 @@ class Header extends Component {
     return (
   <nav className="navbar navbar-expand-lg navbar-light bg-light">
   <div className="collapse navbar-collapse">
-    <Link className="navbar-brand" to="/">{this.props.title}</Link>
+    <Link className="navbar-brand" to="/"><img className="header_logo" alt="logo" src={logo}></img>{this.props.title}</Link>
     <ul className="navbar-nav ml-auto">
       {busy}
       {search}
@@ -48,5 +48,4 @@ Header.propTypes = {
   title: PropTypes.string
 };
 
-//export default withRouter(Header);
 export default Header;

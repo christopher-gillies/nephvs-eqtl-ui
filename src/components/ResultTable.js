@@ -7,7 +7,7 @@ class ResultTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sortCol: "p_val",
+      sortCol: "pVal",
       sortColClass: "fa fa-sort-asc",
     };
   }
@@ -51,17 +51,17 @@ class ResultTable extends Component {
     });
 
     let rows = [];
-    for(let i = 0; i < newSort.length; i++) {
+    for(let i = 0; i < this.props.maxRows && i < newSort.length; i++) {
       let rowData = newSort[i];
-      let linkTo = "/pairResult/tissue/" + this.props.tissue + "/gene/" + rowData.entrez + "/variant/" + rowData.snp
+      let linkTo = "/pairResult/tissue/" + this.props.tissue + "/gene/" + rowData.entrezId + "/variant/" + rowData.variantStr
       let content = (
         <tr key={i}>
-        <td>{rowData.entrez}</td>
-        <td>{ rowData.symbol }</td>
-        <td>{ rowData.snp }</td>
+        <td>{rowData.entrezId}</td>
+        <td>{ rowData.geneSymbol }</td>
+        <td>{ rowData.variantStr.substring(0,20) }</td>
         <td>{ rowData.beta }</td>
-        <td>{ rowData.t_stat }</td>
-        <td>{ rowData.p_val }</td>
+        <td>{ rowData.tStat }</td>
+        <td>{ rowData.pVal }</td>
         <td><Link to={linkTo}>Gene/variant pair detail</Link></td>
         </tr>
       );
@@ -74,12 +74,12 @@ class ResultTable extends Component {
       <table className="table table-striped">
         <thead>
           <tr>
-            <th onClick={ (e) => this.headerClick('entrez')} scope="col" className="pointer">Entrez Id <i className={this.getClassForHeader('entrez')} aria-hidden="true"></i></th>
+            <th onClick={ (e) => this.headerClick('entrezId')} scope="col" className="pointer">Entrez Id <i className={this.getClassForHeader('entrezId')} aria-hidden="true"></i></th>
             <th onClick={ (e) => this.headerClick('symbol')} scope="col" className="pointer"> Gene Symbol <i className={this.getClassForHeader('symbol')} aria-hidden="true"></i></th>
-            <th onClick={ (e) => this.headerClick('snp')} scope="col" className="pointer">SNP <i className={this.getClassForHeader('snp')} aria-hidden="true"></i></th>
+            <th onClick={ (e) => this.headerClick('variantStr')} scope="col" className="pointer">SNP <i className={this.getClassForHeader('variantStr')} aria-hidden="true"></i></th>
             <th onClick={ (e) => this.headerClick('beta')} scope="col" className="pointer">Beta <i className={this.getClassForHeader('beta')}aria-hidden="true"></i></th>
-            <th onClick={ (e) => this.headerClick('t_stat')} scope="col" className="pointer">t-statistic <i className={this.getClassForHeader('t_stat')}aria-hidden="true"></i></th>
-            <th onClick={ (e) => this.headerClick('p_val')} scope="col" className="pointer">p-value <i className={this.getClassForHeader('p_val')} aria-hidden="true"></i></th>
+            <th onClick={ (e) => this.headerClick('tStat')} scope="col" className="pointer">t-statistic <i className={this.getClassForHeader('tStat')}aria-hidden="true"></i></th>
+            <th onClick={ (e) => this.headerClick('pVal')} scope="col" className="pointer">p-value <i className={this.getClassForHeader('pVal')} aria-hidden="true"></i></th>
             <th> Action </th>
           </tr>
         </thead>

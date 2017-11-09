@@ -179,7 +179,7 @@ SearchForm.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
   query: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
-  queryService: PropTypes.instanceOf(QueryService)
+  queryService: PropTypes.instanceOf(QueryService).isRequired
 }
 
 export default SearchForm;
