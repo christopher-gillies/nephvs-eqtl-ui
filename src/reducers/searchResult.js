@@ -26,6 +26,7 @@ const searchResult = (state = {}, action) => {
         ...state,
         glomResults: action.glomResults,
         tubResults: action.tubResults,
+        queryType: action.queryType,
         isFetching: false
       };
       break;

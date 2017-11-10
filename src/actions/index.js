@@ -78,8 +78,9 @@ function requestQueryResults() {
 function receiveQueryResults(json) {
   return {
     type: RECEIVE_QUERY_RESULTS,
-    glomResults: json.glom,
-    tubResults: json.tub,
+    glomResults: queryService.transformPeerEQTLResultList(json.glom),
+    tubResults: queryService.transformPeerEQTLResultList(json.tub),
+    queryType: json.query.type
   }
 }
 

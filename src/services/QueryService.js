@@ -49,6 +49,31 @@ class QueryService {
     return url;
   }
 
+  /**
+  *
+  * Converts a result from QueryController query method to have
+  * chrom, pos, ref, alt values
+  * @param List<EQTLEntry> peerEQTLResultList - List of results from service
+  */
+  transformPeerEQTLResultList = (peerEQTLResultList) => {
+    if(!peerEQTLResultList) {
+      return peerEQTLResultList;
+    }
+
+    for(let i = 0; i < peerEQTLResultList.length; i++) {
+      let res = peerEQTLResultList[i];
+      let variantStr = res.variantStr;
+      let re = /([^:]+)[:](\d+)[_]([^/]+)[/]([^/]+)/;
+      let match = re.exec(variantStr);
+      if(match.length === 5) {
+        res['chrom'] = match[1];
+        res['pos'] = parseInt(match[2], 10);
+        res['ref'] = match[3];
+        res['alt'] = match[4];
+      }
+    }
+    return peerEQTLResultList;
+  }
 
 }
 

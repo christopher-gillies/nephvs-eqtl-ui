@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './ResultTable.css'
-import { Link } from 'react-router-dom'
 
 class ResultTable extends Component {
 
@@ -9,6 +8,9 @@ class ResultTable extends Component {
     this.state = {
       sortCol: "pVal",
       sortColClass: "fa fa-sort-asc",
+      pageSize: 10,
+      currentPage: 1,
+      showPageDropDown: false
     };
   }
 
@@ -27,19 +29,103 @@ class ResultTable extends Component {
       this.setState( {
         sortCol: col,
         sortColClass: "fa fa-sort-desc",
+        currentPage: 1
       });
     } else {
       //sort ascending
       this.setState( {
         sortCol: col,
         sortColClass: "fa fa-sort-asc",
+        currentPage: 1
       });
     }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if(this.props.data !== nextProps.data) {
+      this.setState({
+        currentPage: 1
+      })
+    }
+  }
+
+  handlePageClick = (page) => {
+    this.setState( {
+      currentPage: page
+    })
+  }
+
+  handleNextPageClick = (numberOfPages) => {
+    if(this.state.currentPage < numberOfPages) {
+      this.setState( {
+        currentPage: ++this.state.currentPage
+      })
+    }
+  }
+
+  handlePreviousPageClick = () => {
+    if(this.state.currentPage > 1) {
+      this.setState( {
+        currentPage: --this.state.currentPage
+      })
+    }
+  }
+
+  createPages = (numberOfPages) => {
+    let currentPage = this.state.currentPage;
+    console.log("Current Page: " + currentPage);
+    let pages = null;
+    if(numberOfPages === 2) {
+      pages = (
+        <nav>
+          <ul className="pagination justify-content-end">
+            <li className={currentPage === 1 ? "page-item disabled" : "page-item"}><a onClick={ () => this.handlePreviousPageClick() } className="page-link">Previous</a></li>
+            <li className={currentPage === 1 ? "page-item active" : "page-item"}><a className="page-link" onClick={ () => this.handlePageClick(1) }>1</a></li>
+            <li className={currentPage === 2 ? "page-item active" : "page-item"}><a className="page-link" onClick={ () => this.handlePageClick(2) }>2</a></li>
+            <li className={currentPage === numberOfPages ? "page-item disabled" : "page-item"}><a onClick={ () => this.handleNextPageClick(numberOfPages) } className="page-link">Next</a></li>
+          </ul>
+        </nav>
+      );
+    } else if(numberOfPages === 3) {
+      pages = (
+        <nav>
+          <ul className="pagination justify-content-end">
+            <li className={currentPage === 1 ? "page-item disabled" : "page-item"}><a onClick={ () => this.handlePreviousPageClick() } className="page-link">Previous</a></li>
+            <li className={currentPage === 1 ? "page-item active" : "page-item"}><a className="page-link" onClick={ () => this.handlePageClick(1) }>1</a></li>
+            <li className={currentPage === 2 ? "page-item active" : "page-item"}><a className="page-link" onClick={ () => this.handlePageClick(2) }>2</a></li>
+            <li className={currentPage === 3 ? "page-item active" : "page-item"}><a className="page-link" onClick={ () => this.handlePageClick(3) }>3</a></li>
+            <li className={currentPage === numberOfPages ? "page-item disabled" : "page-item"}><a onClick={ () => this.handleNextPageClick(numberOfPages) }  className="page-link">Next</a></li>
+          </ul>
+        </nav>
+      );
+    } else if(numberOfPages > 3) {
+      let middlePage = Math.floor(numberOfPages / 2) + 1
+      if(currentPage !== 1 && currentPage !== numberOfPages) {
+        middlePage = currentPage;
+      }
+
+      pages = (
+        <nav>
+          <ul className="pagination justify-content-end">
+            <li className={currentPage === 1 ? "page-item disabled" : "page-item"}><a onClick={ () => this.handlePreviousPageClick() } className="page-link">Previous</a></li>
+            <li className={currentPage === 1 ? "page-item active" : "page-item"}><a className="page-link" onClick={ () => this.handlePageClick(1) }>1</a></li>
+            <li className="page-item disabled"><a className="page-link">...</a></li>
+            <li className={currentPage === middlePage ? "page-item active" : "page-item"}><a className="page-link" onClick={ () => this.handlePageClick(middlePage) }>{middlePage}</a></li>
+            <li className="page-item disabled"><a className="page-link">...</a></li>
+            <li className={currentPage === numberOfPages ? "page-item active" : "page-item"}><a className="page-link" onClick={ () => this.handlePageClick(numberOfPages) }>{numberOfPages}</a></li>
+            <li className={currentPage === numberOfPages ? "page-item disabled" : "page-item"}><a onClick={ () => this.handleNextPageClick(numberOfPages) }  className="page-link">Next</a></li>
+          </ul>
+        </nav>
+      );
+    }
+    return pages;
   }
 
   //fa-sort-asc
   //fa-sort-desc
   render() {
+
+
 
     let newSort = this.props.data.slice();
     let sortFactor = this.state.sortColClass === "fa fa-sort-asc" ? 1 : -1;
@@ -51,45 +137,82 @@ class ResultTable extends Component {
     });
 
     let rows = [];
-    for(let i = 0; i < this.props.maxRows && i < newSort.length; i++) {
+    //loop through each row
+    let currentIndex = this.state.pageSize * ( this.state.currentPage - 1);
+    for(let i = currentIndex; i < currentIndex + this.state.pageSize && i < newSort.length; i++) {
       let rowData = newSort[i];
-      let linkTo = "/pairResult/tissue/" + this.props.tissue + "/gene/" + rowData.entrezId + "/variant/" + rowData.variantStr
-      let content = (
+      let cells = [];
+      //loop through each column
+      this.props.columns.forEach((column) => {
+        let cell = (
+            <td key={column.key}>{ column.formatter(rowData) }</td>
+          );
+        cells.push(cell);
+      })
+
+      let row = (
         <tr key={i}>
-        <td>{rowData.entrezId}</td>
-        <td>{ rowData.geneSymbol }</td>
-        <td>{ rowData.variantStr.substring(0,20) }</td>
-        <td>{ rowData.beta }</td>
-        <td>{ rowData.tStat }</td>
-        <td>{ rowData.pVal }</td>
-        <td><Link to={linkTo}>Gene/variant pair detail</Link></td>
+        { cells }
         </tr>
       );
-      rows.push(content);
+      rows.push(row);
     }
 
+    let headerCols = [];
+    this.props.columns.forEach((column) => {
+      let colHeader = null;
+      if(column.sortable !== false) {
+        colHeader = (
+          <th key={column.key} onClick={ (e) => this.headerClick(column.key)} scope="col" className="pointer"> {column.name} <i className={this.getClassForHeader(column.key)} aria-hidden="true"></i></th>
+        );
+      } else {
+        colHeader = ( <th key={column.name}> { column.name } </th> );
+      }
+      headerCols.push(colHeader);
+    });
+
+    let numberOfPages = Math.floor( this.props.data.length / this.state.pageSize ) + 1;
+    console.log(numberOfPages)
+    let pages = this.createPages(numberOfPages);
+
+    let pageSizeDropDown = (
+      <div className="dropdown float-right">
+      <button className="btn btn-light dropdown-toggle" onClick={ () => this.setState({showPageDropDown: !this.state.showPageDropDown}) }>
+        Page size: {this.state.pageSize}
+      </button>
+      <div className={ this.state.showPageDropDown ? "dropdown-menu show" : "dropdown-menu" }>
+        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 5, showPageDropDown: false, currentPage: 1})}>5</a>
+        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 10, showPageDropDown: false, currentPage: 1})}>10</a>
+        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 20, showPageDropDown: false, currentPage: 1})}>20</a>
+        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 50, showPageDropDown: false, currentPage: 1})}>50</a>
+        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 100, showPageDropDown: false, currentPage: 1})}>100</a>
+        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 500, showPageDropDown: false, currentPage: 1})}>500</a>
+      </div>
+    </div>
+  );
+
+    let summaryStr = (<span>Showing items {currentIndex + 1} to {Math.min(this.props.data.length,currentIndex + this.state.pageSize)} of {this.props.data.length} </span>);
+    if(this.props.data.length === 0) {
+      summaryStr = (<span>No results...</span>);
+    }
     return(
       <div>
-
-      <table className="table table-striped">
+      <span className="float-right">{summaryStr}</span>
+      <table className="table table-striped text-center smaller-font">
         <thead>
           <tr>
-            <th onClick={ (e) => this.headerClick('entrezId')} scope="col" className="pointer">Entrez Id <i className={this.getClassForHeader('entrezId')} aria-hidden="true"></i></th>
-            <th onClick={ (e) => this.headerClick('symbol')} scope="col" className="pointer"> Gene Symbol <i className={this.getClassForHeader('symbol')} aria-hidden="true"></i></th>
-            <th onClick={ (e) => this.headerClick('variantStr')} scope="col" className="pointer">SNP <i className={this.getClassForHeader('variantStr')} aria-hidden="true"></i></th>
-            <th onClick={ (e) => this.headerClick('beta')} scope="col" className="pointer">Beta <i className={this.getClassForHeader('beta')}aria-hidden="true"></i></th>
-            <th onClick={ (e) => this.headerClick('tStat')} scope="col" className="pointer">t-statistic <i className={this.getClassForHeader('tStat')}aria-hidden="true"></i></th>
-            <th onClick={ (e) => this.headerClick('pVal')} scope="col" className="pointer">p-value <i className={this.getClassForHeader('pVal')} aria-hidden="true"></i></th>
-            <th> Action </th>
+            { headerCols }
           </tr>
         </thead>
         <tbody>
-        {rows}
+          { rows }
         </tbody>
       </table>
-
+      {pageSizeDropDown}
+      {pages}
+      <br />
       </div>
-    )
+    );
   }
 
 }

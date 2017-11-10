@@ -9,7 +9,8 @@ const mapStateToProps = (state, ownProps) => {
     currentTab: state.searchResult.currentTab,
     glomResults: state.searchResult.glomResults,
     tubResults: state.searchResult.tubResults,
-    query: ownProps.match.params.query
+    query: ownProps.match.params.query,
+    queryType: state.searchResult.queryType
   }
 }
 

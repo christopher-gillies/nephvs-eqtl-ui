@@ -28,7 +28,8 @@ let initState = {
   searchResult: {
     currentTab: "glom",
     glomResults: [],
-    tubResults: []
+    tubResults: [],
+    queryType: ""
   },
   gene: {
     symbols: []

@@ -1,3 +1,8 @@
 .pointer {
   cursor: pointer;
 }
+
+.smaller-font {
+  font-size: 14px;
+  line-height: 1.428;
+}
