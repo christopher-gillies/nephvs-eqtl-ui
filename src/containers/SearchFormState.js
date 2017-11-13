@@ -1,8 +1,6 @@
 import { connect } from 'react-redux'
 import SearchForm from '../components/SearchForm'
-import { setSearchQuery } from '../actions'
-import { setSuggestions } from '../actions'
-import { setSearchError } from '../actions'
+import { setSearchQuery, setSuggestions, setSearchError } from '../actions'
 import QueryService from '../services/QueryService'
 import { withRouter } from 'react-router-dom'
 
@@ -28,6 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   handleSearchError: (errorMessage) => {
     dispatch(setSearchError(errorMessage, ownProps.stateKey))
   }
+
 })
 
 //add with router so that we can get link information always

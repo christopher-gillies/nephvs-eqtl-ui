@@ -3,7 +3,10 @@ import fetch from 'isomorphic-fetch'
 import { SET_SEARCH_QUERY } from "./consts.js"
 import { SET_SEARCH_ERROR } from "./consts.js"
 import { SET_SUGGESTIONS } from "./consts.js"
+
 import { SET_TAB } from "./consts.js"
+import { SET_FILTERS } from './consts';
+
 import { REQUEST_ALL_GENE_SYMBOLS } from "./consts.js"
 import { RECEIVE_ALL_GENE_SYMBOLS } from "./consts.js"
 import { REQUEST_QUERY_RESULTS } from "./consts.js"
@@ -35,6 +38,11 @@ export const setTab = (tab) => ({
   tab: tab
 })
 
+export const setFilters = (filters) => ({
+  type: SET_FILTERS,
+  visible: filters.visible,
+  maxPVal: filters.maxPVal
+})
 
 function requestAllGeneSymbols() {
   return {
@@ -85,10 +93,13 @@ function receiveQueryResults(json) {
 }
 
 
-export function fetchQueryResults(query) {
+export function fetchQueryResults(query, maxPVal = 0.05) {
   return function(dispatch) {
     dispatch(requestQueryResults());
-    let url = queryService.makeQeury("/query", { query: query });
+    let url = queryService.makeQeury("/query", {
+      query: query,
+      maxPVal: maxPVal
+    });
     return fetch(url)
       .then(response => {
         let jsonRes = response.json();
@@ -98,7 +109,10 @@ export function fetchQueryResults(query) {
           console.log('An error occured.', error)
         })
       .then(json => {
-         dispatch(receiveQueryResults(json))
+        setTimeout(() => {
+          dispatch(receiveQueryResults(json))
+        }, 0)
+
       })
   }
 }

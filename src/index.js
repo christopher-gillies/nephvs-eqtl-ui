@@ -29,7 +29,11 @@ let initState = {
     currentTab: "glom",
     glomResults: [],
     tubResults: [],
-    queryType: ""
+    queryType: "",
+    filters: {
+      visible: false,
+      maxPVal: 0.05
+    }
   },
   gene: {
     symbols: []

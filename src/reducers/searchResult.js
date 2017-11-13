@@ -1,4 +1,6 @@
 import { SET_TAB } from "../actions/consts.js"
+import { SET_FILTERS } from "../actions/consts.js"
+
 import { REQUEST_QUERY_RESULTS } from "../actions/consts.js"
 import { RECEIVE_QUERY_RESULTS } from "../actions/consts.js"
 
@@ -13,6 +15,15 @@ const searchResult = (state = {}, action) => {
       }
       break;
 
+    case SET_FILTERS:
+      state_res = {
+        ...state,
+        filters: {
+          maxPVal: action.maxPVal,
+          visible: action.visible
+        }
+      }
+      break;
     case REQUEST_QUERY_RESULTS:
       state_res = {
         ...state,

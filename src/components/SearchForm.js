@@ -80,7 +80,7 @@ class SearchForm extends Component {
     let query = this.props.query;
 
     this.props.queryService.validateQuery(query, (jsonRes) => {
-      if(jsonRes === true) {
+      if(jsonRes.valid === true) {
         this.props.history.push("/searchResult/" + this.props.query)
         this.props.handleSearchError("");
       } else {

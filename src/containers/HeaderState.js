@@ -4,13 +4,13 @@ import { withRouter } from 'react-router-dom'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    isFetching: state.gene.isFetching,
+    isFetching: state.gene.isFetching || state.searchResult.isFetching,
     pathname: ownProps.location.pathname,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  
+
 })
 
 const HeaderState = withRouter(connect(
