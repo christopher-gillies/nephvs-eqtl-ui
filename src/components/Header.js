@@ -34,7 +34,7 @@ class Header extends Component {
     <ul className="navbar-nav ml-auto">
       {busy}
       {search}
-      <li className="nav-item"><a className="nav-link" href="http://nephvs.org">NephVS</a></li>
+      <li className="nav-item"><a className="nav-link" href="http://nephvs.org" target="_blank">NephVS</a></li>
       <li className="nav-item"><Link className="nav-link" to="/about">About</Link></li>
     </ul>
   </div>

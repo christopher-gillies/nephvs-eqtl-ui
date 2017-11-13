@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { setTab, fetchQueryResults, setFilters } from '../actions'
 import SearchResult from '../components/SearchResult'
 import { withRouter } from 'react-router-dom'
+import QueryService from '../services/QueryService'
 
 const mapStateToProps = (state, ownProps) => {
   //console.log("SearchResult map state to props")
@@ -16,6 +17,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 
+const queryService = new QueryService()
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   handleSetTab: (tab) => {
@@ -23,7 +25,30 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 
   submitQuery: (query, maxPVal) => {
-    dispatch(fetchQueryResults(query, maxPVal))
+
+    //before submitting validate query
+    queryService.validateQuery(query, (jsonRes) => {
+      if(jsonRes.valid === "Valid") {
+
+        if(jsonRes.type === "Variant" || jsonRes.type === "dbSNP" ||
+          jsonRes.type === "Region" ) {
+          //force maxpval to be 1
+          dispatch(setFilters({
+            visible: false,
+            maxPVal: 1
+          }));
+          maxPVal = 1;
+        }
+        dispatch(fetchQueryResults(query, maxPVal))
+      } else {
+        // TODO: Do something with this issue
+        console.log("Query is not valid")
+      }
+    }, (error) => {
+      console.log("Error no connection to server")
+    });
+
+
   },
 
   handleSetFilters: (filters) => {
