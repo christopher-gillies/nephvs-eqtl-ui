@@ -80,11 +80,15 @@ class SearchForm extends Component {
     let query = this.props.query;
 
     this.props.queryService.validateQuery(query, (jsonRes) => {
-      if(jsonRes.valid === "Valid") {
+      if(jsonRes.status === "Valid") {
         this.props.history.push("/searchResult/" + this.props.query)
         this.props.handleSearchError("");
+      } else if(jsonRes.status === "RegionToLarge") {
+        this.props.handleSearchError("Regions must be smaller than 5mb")
+      } else if(jsonRes.status === "StartGreaterThanEnd") {
+        this.props.handleSearchError("The start position must be less than or equal to the end position")
       } else {
-        this.props.handleSearchError("Please specify search criteria")
+        this.props.handleSearchError("Please type a query")
       }
     }, (error) => {
       this.props.handleSearchError("No response from server");
@@ -106,7 +110,7 @@ class SearchForm extends Component {
 
 
     const inputProps = {
-      placeholder: 'Type a gene or dbSNP identifier',
+      placeholder: 'Type a gene (symbol, Entrez id or Ensembl) or dbSNP identifier',
       value: this.props.query,
       onChange: this.handleInputChange
     };

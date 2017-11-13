@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
     //before submitting validate query
     queryService.validateQuery(query, (jsonRes) => {
-      if(jsonRes.valid === "Valid") {
+      if(jsonRes.status === "Valid") {
 
         if(jsonRes.type === "Variant" || jsonRes.type === "dbSNP" ||
           jsonRes.type === "Region" ) {
