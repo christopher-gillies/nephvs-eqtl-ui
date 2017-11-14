@@ -138,14 +138,16 @@ class SearchResult extends Component {
 
     if(this.props.filters.visible === true) {
       filters = (
-        <form onSubmit={this.onUpdateClick}>
-          <div className="form-group">
-            <label>Maximum p-value for variants to retrieve from server:</label>
-            <input onChange={this.onPValChange}
-              className="form-control" type="number" min="0" max="1" placeholder="Maximum p-value to retrieve from server" step="0.01" value={this.props.filters.maxPVal}/>
-          </div>
-          <input type="submit" className="btn btn-primary" value="Update" />
-        </form>
+        <div className="card-body">
+          <form onSubmit={this.onUpdateClick}>
+            <div className="form-group">
+              <label>Maximum p-value for variants to retrieve from server:</label>
+              <input onChange={this.onPValChange}
+                className="form-control" type="number" min="0" max="1" placeholder="Maximum p-value to retrieve from server" step="0.01" value={this.props.filters.maxPVal}/>
+            </div>
+            <input type="submit" className="btn btn-primary" value="Update" />
+          </form>
+        </div>
       );
     }
 
@@ -159,10 +161,10 @@ class SearchResult extends Component {
           <li onClick={() => this.onTabClick('tub')} className="nav-item"><a className={ this.props.currentTab === "tub" ? "nav-link active" : "nav-link"}>Tubulointerstitial</a></li>
         </ul>
         <br />
-          <div className="card card-body">
-            <div>
-              <h4 className="d-inline card-title">Filters:</h4>
-              <button className="btn btn-primary float-right" onClick={this.onShowFilters}>{this.props.filters.visible === true ? "-" : "+"}</button>
+          <div className="card">
+            <div className="card-header">
+              <h5 className="d-inline card-title">Filters:</h5>
+              <button className="btn btn-outline-primary btn-sm float-right" onClick={this.onShowFilters}>{this.props.filters.visible === true ? "-" : "+"}</button>
             </div>
             { filters }
           </div>
