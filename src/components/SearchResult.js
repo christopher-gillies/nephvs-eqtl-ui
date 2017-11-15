@@ -17,7 +17,7 @@ class SearchResult extends Component {
     //console.log(nextProps)
     if(nextProps.query !== this.props.query) {
       console.log("make ajax call")
-      this.props.submitQuery(nextProps.query, this.props.filters.maxPVal);
+      this.props.submitQuery(nextProps.query, nextProps.maxPVal);
     }
   }
 
@@ -41,6 +41,14 @@ class SearchResult extends Component {
     });
   }
 
+  linkClick = (maxPVal) => {
+    let filters = this.props.filters;
+
+    this.props.handleSetFilters({ ...filters,
+      maxPVal:  maxPVal
+    });
+  }
+
   onUpdateClick = (e) => {
     this.props.submitQuery(this.props.query, this.props.filters.maxPVal);
     e.preventDefault();
@@ -53,28 +61,57 @@ class SearchResult extends Component {
       {
         key: 'entrezId',
         name: "Entrez Id",
-        formatter: (rowData) => rowData.entrezId
+        formatter: (rowData) => {
+          let linkTo = "/searchResult/" + rowData.entrezId;
+          return (<Link onClick={() => this.linkClick(0.05)} to={linkTo}><i>{rowData.entrezId}</i></Link>);
+        }
       },
       {
         key: 'geneSymbol',
         name: "Gene Symbol",
-        formatter: (rowData) => (<i>{rowData.geneSymbol}</i>)
+        formatter: (rowData) => {
+          let linkTo = "/searchResult/" + rowData.geneSymbol;
+          return (<Link onClick={() => this.linkClick(0.05)} to={linkTo}><i>{rowData.geneSymbol}</i></Link>)
+        }
       },
       {
         key: 'dbSNPId',
         name: "dbSNPId",
-        formatter: (rowData) => rowData.dbSNPId
+        formatter: (rowData) => {
+          let linkTo = "/searchResult/" + rowData.dbSNPId;
+          return (<Link to={linkTo}>{rowData.dbSNPId}</Link>)
+        }
       },
       {
-        key: 'chrom',
-        name: "Chrom.",
-        formatter: (rowData) => rowData.chrom
+        key: 'chrom:Pos',
+        name: "Chr:pos",
+        formatter: (rowData) => {
+          let content = rowData.chrom + ":" + rowData.pos;
+          let linkTo = "/searchResult/" + content;
+          return (<Link to={linkTo}>{content}</Link>)
+        },
+        sortFunction: (a,b) => {
+          let chrA = a['chrom'];
+          let posA = a['pos'];
+          let chrB = b['chrom'];
+          let posB = b['pos'];
+
+          if(chrA < chrB) {
+            return -1;
+          } else if(chrB > chrA) {
+            return 1;
+          } else {
+            if(posA < posB) {
+              return -1;
+            } else if(posB < posA) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+        }
       },
-      {
-        key: 'pos',
-        name: "Pos.",
-        formatter: (rowData) => rowData.pos
-      },
+
       {
         key: 'reference',
         name: "Ref.",
@@ -153,7 +190,8 @@ class SearchResult extends Component {
 
     return(
       <div>
-        <h1>Result for: <span className={this.props.queryType === "GeneSymbol" ? "font-italic" : ""}> {this.props.query.toUpperCase()}</span></h1>
+        <h1>Result for: <span className={this.props.queryType === "GeneSymbol" ? "font-italic" : ""}>
+        {this.props.queryType === "GeneSymbol" ? this.props.query.toUpperCase() : this.props.query}</span></h1>
 
         <div className="border">
         <ul className="nav nav-tabs">

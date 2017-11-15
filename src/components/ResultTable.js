@@ -10,7 +10,8 @@ class ResultTable extends Component {
       sortColClass: "fa fa-sort-asc",
       pageSize: 10,
       currentPage: 1,
-      showPageDropDown: false
+      showPageDropDown: false,
+      sortFunction: null
     };
   }
 
@@ -23,25 +24,28 @@ class ResultTable extends Component {
     }
   }
 
-  headerClick = col => {
+  headerClick = (col,sortFunction = null) => {
     if(this.state.sortCol === col && this.state.sortColClass !== "fa fa-sort-desc") {
       //sort descending
       this.setState( {
         sortCol: col,
         sortColClass: "fa fa-sort-desc",
-        currentPage: 1
+        currentPage: 1,
+        sortFunction: sortFunction
       });
     } else {
       //sort ascending
       this.setState( {
         sortCol: col,
         sortColClass: "fa fa-sort-asc",
-        currentPage: 1
+        currentPage: 1,
+        sortFunction: sortFunction
       });
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
+    //if the component is going to update then reset the page to be one
     if(this.props.data !== nextProps.data) {
       this.setState({
         currentPage: 1
@@ -130,11 +134,20 @@ class ResultTable extends Component {
     let newSort = this.props.data.slice();
     let sortFactor = this.state.sortColClass === "fa fa-sort-asc" ? 1 : -1;
     let col = this.state.sortCol
-    newSort.sort((a,b) => {
-      if(a[col] < b[col]) return -1 * sortFactor;
-      if(a[col] > b[col]) return 1 * sortFactor;
-      return 0;
-    });
+    //allow user to set sort function
+    let sortFunction = this.state.sortFunction;
+    if(sortFunction === null) {
+      sortFunction = (a,b) => {
+        if(a[col] < b[col]) return -1;
+        if(a[col] > b[col]) return 1;
+        return 0;
+      };
+    }
+    newSort.sort(sortFunction);
+    if(sortFactor === -1) {
+      newSort.reverse();
+    }
+
 
     let rows = [];
     //loop through each row
@@ -163,7 +176,7 @@ class ResultTable extends Component {
       let colHeader = null;
       if(column.sortable !== false) {
         colHeader = (
-          <th key={column.key} onClick={ (e) => this.headerClick(column.key)} scope="col" className="pointer"> {column.name} <i className={this.getClassForHeader(column.key)} aria-hidden="true"></i></th>
+          <th key={column.key} onClick={ (e) => this.headerClick(column.key,column.sortFunction)} className="pointer"> {column.name} <i className={this.getClassForHeader(column.key)}></i></th>
         );
       } else {
         colHeader = ( <th key={column.name}> { column.name } </th> );

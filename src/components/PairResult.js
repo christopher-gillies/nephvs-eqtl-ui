@@ -4,6 +4,15 @@ import React, { Component } from 'react';
 
 class PairResult extends Component {
 
+  componentDidMount = () =>  {
+    //make ajax calls for this page
+    //this.props.submitQuery(this.props.query, this.props.filters.maxPVal);
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    //make ajax calls for this page
+    //this.props.submitQuery(nextProps.query, this.props.filters.maxPVal);
+  }
 
   render() {
 

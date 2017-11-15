@@ -18,6 +18,7 @@ class SearchForm extends Component {
 
   constructor(props) {
     super(props);
+    this.searchButton = null;
     this.delay = null;
     // This binding is necessary to make `this` work in the callback
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -79,6 +80,11 @@ class SearchForm extends Component {
   handleSubmit(event) {
     let query = this.props.query;
 
+    //change the focus to the search button so that the suggestion box will disappear
+    if(this.searchButton !== null) {
+      this.searchButton.focus();
+    }
+
     this.props.queryService.validateQuery(query, (jsonRes) => {
       if(jsonRes.status === "Valid") {
         this.props.history.push("/searchResult/" + this.props.query)
@@ -123,7 +129,8 @@ class SearchForm extends Component {
 
     let submit = (
       <div className="text-center">
-        <button type="submit" className="btn btn-primary margin-small">Search</button>
+        <button ref={(searchButton) => { this.searchButton = searchButton; }}
+        type="submit" className="btn btn-primary margin-small">Search</button>
       </div>
     )
 
@@ -141,7 +148,9 @@ class SearchForm extends Component {
 
 
     if(this.props.header === true) {
-      submit = (<button type="submit" className="btn btn-primary">Search</button>)
+      submit = (<button
+        ref={(searchButton) => { this.searchButton = searchButton; }}
+        type="submit" className="btn btn-primary">Search</button>);
       heading = null;
       formStyle="form-inline my-2 my-lg-0";
       inputProps.placeholder = "Enter query"
