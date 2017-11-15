@@ -17,7 +17,7 @@ class SearchResult extends Component {
     //console.log(nextProps)
     if(nextProps.query !== this.props.query) {
       console.log("make ajax call")
-      this.props.submitQuery(nextProps.query, nextProps.maxPVal);
+      this.props.submitQuery(nextProps.query, nextProps.filters.maxPVal);
     }
   }
 
@@ -63,7 +63,7 @@ class SearchResult extends Component {
         name: "Entrez Id",
         formatter: (rowData) => {
           let linkTo = "/searchResult/" + rowData.entrezId;
-          return (<Link onClick={() => this.linkClick(0.05)} to={linkTo}><i>{rowData.entrezId}</i></Link>);
+          return (<Link onClick={() => this.linkClick(0.05)} to={linkTo}>{rowData.entrezId}</Link>);
         }
       },
       {
@@ -164,7 +164,13 @@ class SearchResult extends Component {
         key: 'Action',
         name: 'Action',
         formatter: (rowData) => {
-          let linkTo = "/pairResult/tissue/" + this.props.currentTab + "/gene/" + rowData.entrezId + "/variant/" + rowData.variantStr;
+          let tissue = null;
+          if(this.props.currentTab === "tub") {
+            tissue = "tube";
+          } else {
+            tissue = "glom";
+          }
+          let linkTo = "/detail/tissue/" + tissue + "/gene/" + rowData.entrezId + "/variant/" + encodeURIComponent(rowData.variantStr);
           return (<Link to={linkTo}>View Data</Link>)
         },
         sortable: false

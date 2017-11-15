@@ -87,6 +87,9 @@ class SearchForm extends Component {
 
     this.props.queryService.validateQuery(query, (jsonRes) => {
       if(jsonRes.status === "Valid") {
+        //we reset the max p-value to be 0.05 which is the default
+        //this will be overridden if it is not a gene related query
+        this.props.handleSetMaxPVal(0.05);
         this.props.history.push("/searchResult/" + this.props.query)
         this.props.handleSearchError("");
       } else if(jsonRes.status === "RegionToLarge") {

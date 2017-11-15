@@ -19,7 +19,7 @@ class QueryService {
   failure = failure callback method
   */
   validateQuery = (query, success, failure) => {
-    let url = this.makeQeury("/query/validate", { query: query});
+    let url = this.makeQuery("/query/validate", { query: query});
     fetch(url)
       .then(response => {
         let jsonRes = response.json();
@@ -30,7 +30,7 @@ class QueryService {
       }).then(json => success(json));
   }
 
-  makeQeury = (method,params={}) => {
+  makeQuery = (method,params={}) => {
     let url = baseUrl + method;
     let keys = Object.keys(params);
     if(keys.length > 0) {

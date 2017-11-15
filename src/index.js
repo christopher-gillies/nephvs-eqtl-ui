@@ -38,6 +38,9 @@ let initState = {
   gene: {
     symbols: []
   },
+  geneAndVariantDetail: {
+    variantDetail: {}
+  }
 };
 
 const store = createStore(reducer,

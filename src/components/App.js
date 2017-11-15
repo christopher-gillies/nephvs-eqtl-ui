@@ -8,7 +8,7 @@ import './App.css';
 import HeaderState from '../containers/HeaderState'
 import SearchFormState from '../containers/SearchFormState'
 import SearchResultState from '../containers/SearchResultState'
-import PairResult from './PairResult'
+import GeneAndVariantDetailState from '../containers/GeneAndVariantDetailState'
 import About from './About'
 
 function SearchFormPage(props) {
@@ -30,7 +30,7 @@ class App extends Component {
             <Route exact path="/" render={SearchFormPage}/>
             <Route path="/about" component={About}/>
             <Route path={`/searchResult/:query`} component={SearchResultState}/>
-            <Route path={`/pairResult/tissue/:tissue/gene/:gene/variant/:variant`} component={PairResult}/>
+            <Route path={`/detail/tissue/:tissue/gene/:gene/variant/:variant`} component={GeneAndVariantDetailState}/>
         </div>
       </div>
       </Router>

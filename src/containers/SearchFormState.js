@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import SearchForm from '../components/SearchForm'
-import { setSearchQuery, setSuggestions, setSearchError } from '../actions'
+import { setSearchQuery, setSuggestions, setSearchError, setFilters } from '../actions'
 import QueryService from '../services/QueryService'
 import { withRouter } from 'react-router-dom'
 
@@ -25,6 +25,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   handleSearchError: (errorMessage) => {
     dispatch(setSearchError(errorMessage, ownProps.stateKey))
+  },
+  handleSetMaxPVal: (maxPVal) => {
+    dispatch(setFilters({
+      visible: false,
+      maxPVal: 0.05
+    }));
   }
 
 })
