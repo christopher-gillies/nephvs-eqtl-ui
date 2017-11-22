@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Card from './Card'
-
+import BoxPlot from './BoxPlot'
 
 class GeneAndVariantDetail extends Component {
 
@@ -37,9 +37,22 @@ class GeneAndVariantDetail extends Component {
       }
     }
     console.log(this.props)
+
+    let dataForBoxPlot = [];
+
+    if(this.props.variantDetail.exprAndGtForSubs) {
+      dataForBoxPlot = this.props.variantDetail.exprAndGtForSubs.map( d => {
+          let obj = {group: d.gt, y: d.expr};
+          return obj;
+        }
+      );
+    }
+
     return(
       <div className="container-fluid">
       <h1>Gene and Variant Detail</h1>
+
+      <BoxPlot data={dataForBoxPlot} size={[500,500]} />
 
       <div className="row justify-content-start">
         <Card title="Query">
