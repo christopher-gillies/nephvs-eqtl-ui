@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import './ResultTable.css'
+import './ResultTable.css';
+const FileSaver = require('file-saver');
 
 class ResultTable extends Component {
 
@@ -125,12 +126,41 @@ class ResultTable extends Component {
     return pages;
   }
 
-  //fa-sort-asc
-  //fa-sort-desc
-  render() {
+  saveTable = () => {
+
+    let newSort = this.copyAndSortData();
+    //loop through each row
+    let rows = [];
+    let headerCells = [];
+    this.props.columns.forEach((column) => {
+      headerCells.push(column.name);
+    });
+    rows.push(headerCells.join(","))
+
+    newSort.forEach( (rowData ) => {
+      let cells = [];
+      this.props.columns.forEach((column) => {
+        if(!column.excludeCsv) {
+          let cell = null;
+          if(column.csvFormatter) {
+            cell = column.csvFormatter(rowData);
+          } else {
+            cell = column.formatter(rowData);
+          }
+          cells.push(cell);
+        }
+      })
+      rows.push(cells.join(","))
+    });
+
+    let csv = rows.join("\n");
+    let blob = new Blob([ csv ], {type: "text/plain;charset=utf-8"});
+    let filename = this.props.csvFilename ? this.props.csvFilename : "data.csv";
+    FileSaver.saveAs(blob, filename);
+  }
 
 
-
+  copyAndSortData = () => {
     let newSort = this.props.data.slice();
     let sortFactor = this.state.sortColClass === "fa fa-sort-asc" ? 1 : -1;
     let col = this.state.sortCol
@@ -147,7 +177,13 @@ class ResultTable extends Component {
     if(sortFactor === -1) {
       newSort.reverse();
     }
+    return newSort;
+  }
 
+  //fa-sort-asc
+  //fa-sort-desc
+  render() {
+    let newSort = this.copyAndSortData();
 
     let rows = [];
     //loop through each row
@@ -202,7 +238,14 @@ class ResultTable extends Component {
         <a className="dropdown-item" onClick={ () => this.setState({pageSize: 500, showPageDropDown: false, currentPage: 1})}>500</a>
       </div>
     </div>
-  );
+    );
+
+    let saveButton = (
+          <div className="float-left">
+            <button className="btn btn-light" onClick={ () => this.saveTable() }>
+              Save table as CSV
+            </button>
+          </div> );
 
     let summaryStr = (<span>Showing items {currentIndex + 1} to {Math.min(this.props.data.length,currentIndex + this.state.pageSize)} of {this.props.data.length} </span>);
     if(this.props.data.length === 0) {
@@ -221,8 +264,13 @@ class ResultTable extends Component {
           { rows }
         </tbody>
       </table>
+
+      {saveButton}
+
       {pageSizeDropDown}
+
       {pages}
+
       <br />
       </div>
     );

@@ -64,7 +64,8 @@ class SearchResult extends Component {
         formatter: (rowData) => {
           let linkTo = "/searchResult/" + rowData.entrezId;
           return (<Link onClick={() => this.linkClick(0.05)} to={linkTo}>{rowData.entrezId}</Link>);
-        }
+        },
+        csvFormatter: (rowData) => rowData.entrezId
       },
       {
         key: 'geneSymbol',
@@ -72,7 +73,8 @@ class SearchResult extends Component {
         formatter: (rowData) => {
           let linkTo = "/searchResult/" + rowData.geneSymbol;
           return (<Link onClick={() => this.linkClick(0.05)} to={linkTo}><i>{rowData.geneSymbol}</i></Link>)
-        }
+        },
+        csvFormatter: (rowData) => rowData.geneSymbol
       },
       {
         key: 'dbSNPId',
@@ -80,7 +82,8 @@ class SearchResult extends Component {
         formatter: (rowData) => {
           let linkTo = "/searchResult/" + rowData.dbSNPId;
           return (<Link to={linkTo}>{rowData.dbSNPId}</Link>)
-        }
+        },
+        csvFormatter: (rowData) => rowData.dbSNPId
       },
       {
         key: 'chrom:Pos',
@@ -90,6 +93,7 @@ class SearchResult extends Component {
           let linkTo = "/searchResult/" + content;
           return (<Link to={linkTo}>{content}</Link>)
         },
+        csvFormatter: (rowData) => rowData.chrom + ":" + rowData.pos,
         sortFunction: (a,b) => {
           let chrA = a['chrom'];
           let posA = a['pos'];
@@ -121,7 +125,8 @@ class SearchResult extends Component {
           } else {
             return rowData.ref;
           }
-        }
+        },
+        csvFormatter: (rowData) => rowData.ref,
       },
       {
         key: 'alt',
@@ -132,22 +137,26 @@ class SearchResult extends Component {
           } else {
             return rowData.alt;
           }
-        }
+        },
+        csvFormatter: (rowData) => rowData.alt,
       },
       {
         key: 'overallAf',
         name: "Alt. AF",
-        formatter: (rowData) => rowData.overallAf.toPrecision(3)
+        formatter: (rowData) => rowData.overallAf.toPrecision(3),
+        csvFormatter: (rowData) => rowData.overallAf,
       },
       {
         key: 'beta',
         name: "Beta",
-        formatter: (rowData) => rowData.beta.toPrecision(3)
+        formatter: (rowData) => rowData.beta.toPrecision(3),
+        csvFormatter: (rowData) => rowData.beta,
       },
       {
         key: 'tStat',
         name: "t-statistic",
-        formatter: (rowData) => rowData.tStat.toPrecision(3)
+        formatter: (rowData) => rowData.tStat.toPrecision(3),
+        csvFormatter: (rowData) => rowData.tStat,
       },
       {
         key: 'pVal',
@@ -158,7 +167,8 @@ class SearchResult extends Component {
           } else {
             return rowData.pVal.toPrecision(3)
           }
-        }
+        },
+        csvFormatter: (rowData) => rowData.pVal,
       },
       {
         key: 'Action',
@@ -173,7 +183,8 @@ class SearchResult extends Component {
           let linkTo = "/detail/tissue/" + tissue + "/gene/" + rowData.entrezId + "/variant/" + encodeURIComponent(rowData.variantStr);
           return (<Link to={linkTo}>View Data</Link>)
         },
-        sortable: false
+        sortable: false,
+        excludeCsv: true
       },
     ];
 
@@ -193,6 +204,9 @@ class SearchResult extends Component {
         </div>
       );
     }
+
+    let csvFilename = this.props.currentTab === "glom" ?  "glom" : "tub";
+    csvFilename += '_' + this.props.query + ".csv";
 
     return(
       <div>
@@ -215,7 +229,7 @@ class SearchResult extends Component {
           <br />
           <br />
           <ResultTable data={ this.props.currentTab === "glom" ?  this.props.glomResults : this.props.tubResults}
-            columns={ columns } />
+            columns={ columns } csvFilename={csvFilename} />
         </div>
 
       </div>
