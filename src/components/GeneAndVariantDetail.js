@@ -41,9 +41,9 @@ class GeneAndVariantDetail extends Component {
 
     let dataForBoxPlot = [];
     const allelesStr = [
-      variantDetail.variantRef + "/" + variantDetail.variantRef + " (0)",
-      variantDetail.variantRef + "/" + variantDetail.variantAlt + " (1)",
-      variantDetail.variantAlt + "/" + variantDetail.variantAlt + " (2)"
+      variantDetail.variantRef + "/" + variantDetail.variantRef + " (Coded: 0)",
+      variantDetail.variantRef + "/" + variantDetail.variantAlt + " (Coded: 1)",
+      variantDetail.variantAlt + "/" + variantDetail.variantAlt + " (Coded: 2)"
     ]
 
     if(variantDetail.exprAndGtForSubs) {
@@ -89,8 +89,10 @@ class GeneAndVariantDetail extends Component {
       <div className="container-fluid">
       <div className="text-center"><h3>{title}</h3></div>
 
-      <BoxPlot data={dataForBoxPlot} groupOrder={allelesStr} width="1000" height="600" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic} boxWidth="125"/>
-
+      <div className="text-center">
+      <BoxPlot data={dataForBoxPlot}
+        groupOrder={allelesStr} width="600" height="600" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic} boxWidth="150"/>
+      </div>
       <div className="row justify-content-start">
         <Card title="Query">
           <p><b>Tissue:</b> {this.props.match.params.tissue}</p>
@@ -115,6 +117,9 @@ class GeneAndVariantDetail extends Component {
           <p><b>Reference:</b> {variantDetail.variantRef} </p>
           <p><b>Alternative:</b> {variantDetail.variantAlt}</p>
           <p><b>dbSNP:</b> {variantDetail.variantDbSNPId} </p>
+          <p><b>Number of reference homozygotes:</b> {allelesStr[0]} {variantDetail.homRef} </p>
+          <p><b>Number of heterozygotes:</b> {allelesStr[1]} {variantDetail.het} </p>
+          <p><b>Number of alternative homozygotes:</b> {allelesStr[2]} {variantDetail.homAlt} </p>
         </Card>
 
         <Card title="NEPTUNE Allele Frequencies">

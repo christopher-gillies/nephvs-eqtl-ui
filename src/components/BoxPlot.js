@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './BoxPlot.css'
 import { select, max, min, scaleLinear, scaleBand, scaleOrdinal, quantile,
-axisLeft, axisBottom } from 'd3'
+axisLeft, axisBottom, mean } from 'd3'
 import { schemeAccent } from 'd3-scale-chromatic'
 const tip = require('d3-tip')
 
@@ -68,18 +68,19 @@ class BoxPlot extends Component {
      //format for D3
      let boxPlotData = [];
 
-     for (var [group, groupVals] of Object.entries(groupedData)) {
+     for (let [group, groupVals] of Object.entries(groupedData)) {
 
-       var record = {};
-       var localMin = min(groupVals);
-       var localMax = max(groupVals);
-       var quartiles = computeQuartiles(groupVals);
-       var iqr = quartiles[2] - quartiles[0]
-       var lb_iqr = quartiles[0] - 1.5 * iqr;
-       var ub_iqr = quartiles[2] + 1.5 * iqr;
-       var lowerWhisker = max( [localMin, lb_iqr]);
-       var upperWhisker = min( [localMax, ub_iqr]);
-       var outliers = groupVals.filter(function(c) {
+       let record = {};
+       let localMin = min(groupVals);
+       let localMax = max(groupVals);
+       let localMean = mean(groupVals)
+       let quartiles = computeQuartiles(groupVals);
+       let iqr = quartiles[2] - quartiles[0]
+       let lb_iqr = quartiles[0] - 1.5 * iqr;
+       let ub_iqr = quartiles[2] + 1.5 * iqr;
+       let lowerWhisker = max( [localMin, lb_iqr]);
+       let upperWhisker = min( [localMax, ub_iqr]);
+       let outliers = groupVals.filter(function(c) {
          if(c < lb_iqr || c > ub_iqr) {
            return true;
          } else {
@@ -95,6 +96,7 @@ class BoxPlot extends Component {
        record["quartile"] = quartiles;
        record["min"] = localMin;
        record["max"] = localMax;
+       record["mean"] = localMean;
        record["whiskers"] = [lowerWhisker, upperWhisker];
        record["color"] = colorScale(group);
 
@@ -196,6 +198,7 @@ class BoxPlot extends Component {
         return "<p><strong>N:</strong> " + d.n + "</p>" +
         "<p><strong>1st Quartile:</strong> " + d.quartile[0].toPrecision(3) + "</p>" +
         "<p><strong>Median:</strong> " + d.quartile[1].toPrecision(3) + "</p>" +
+        "<p><strong>Mean:</strong> " + d.mean.toPrecision(3) + "</p>" +
         "<p><strong>3rd Quartile:</strong> " + d.quartile[2].toPrecision(3) + "</p>" +
         "<p><strong>Min: </strong> " + d.min.toPrecision(3) + "</p>" +
         "<p><strong>Max: </strong> " + d.max.toPrecision(3) + "</p>";
