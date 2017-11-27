@@ -27,32 +27,69 @@ class GeneAndVariantDetail extends Component {
   }
 
   render() {
+    const variantDetail = this.props.variantDetail;
 
     let pValFormat = null;
-    if(this.props.variantDetail.pVal !== null && this.props.variantDetail.pVal !== undefined) {
-      if(this.props.variantDetail.pVal < 0.001) {
-        pValFormat = this.props.variantDetail.pVal.toExponential(3);
+    if(variantDetail.pVal !== null && variantDetail.pVal !== undefined) {
+      if(variantDetail.pVal < 0.001) {
+        pValFormat = variantDetail.pVal.toExponential(3);
       } else {
-        pValFormat = this.props.variantDetail.pVal.toPrecision(3);
+        pValFormat = variantDetail.pVal.toPrecision(3);
       }
     }
     console.log(this.props)
 
     let dataForBoxPlot = [];
+    const allelesStr = [
+      variantDetail.variantRef + "/" + variantDetail.variantRef + " (0)",
+      variantDetail.variantRef + "/" + variantDetail.variantAlt + " (1)",
+      variantDetail.variantAlt + "/" + variantDetail.variantAlt + " (2)"
+    ]
 
-    if(this.props.variantDetail.exprAndGtForSubs) {
-      dataForBoxPlot = this.props.variantDetail.exprAndGtForSubs.map( d => {
-          let obj = {group: d.gt, y: d.expr};
+    if(variantDetail.exprAndGtForSubs) {
+      dataForBoxPlot = variantDetail.exprAndGtForSubs.map( d => {
+
+          let obj = {group: allelesStr[d.gt], y: d.expr};
           return obj;
         }
       );
     }
 
+    let xlab = null;
+    if(variantDetail.variantDbSNPId) {
+        xlab = "Genotypes for " + variantDetail.variantDbSNPId;
+    } else {
+        xlab = "Genotypes for " + variantDetail.variantStr;
+    }
+
+    let ylab = null;
+    let ylabItalic = "";
+
+    if(variantDetail.geneSymbol) {
+      ylab = "Rank normalized adjusted expression for ";
+      ylabItalic = variantDetail.geneSymbol;
+    } else {
+      ylab = "Rank normalized adjusted expression for " + variantDetail.geneEntrezId;
+    }
+
+    let title = null;
+    if(variantDetail.variantDbSNPId && variantDetail.geneSymbol) {
+      title = (<span> Gene and Variant detail for <i> {variantDetail.geneSymbol} </i> and {variantDetail.variantDbSNPId} in {this.props.match.params.tissue}</span>);
+    } else if(variantDetail.geneSymbol) {
+      title = (<span> Gene and Variant detail for <i> {variantDetail.geneSymbol} </i> and {variantDetail.variantStr} in {this.props.match.params.tissue}</span>);
+    } else if(variantDetail.variantDbSNPId) {
+      title = (<span> Gene and Variant detail for <i> {variantDetail.entrezId} </i> and {variantDetail.variantDbSNPId} in {this.props.match.params.tissue}</span>);
+    } else {
+      title = (<span> Gene and Variant detail for <i> {variantDetail.entrezId} </i> and {variantDetail.variantStr} in {this.props.match.params.tissue}</span>);
+    }
+
+
+
     return(
       <div className="container-fluid">
-      <h1>Gene and Variant Detail</h1>
+      <div className="text-center"><h3>{title}</h3></div>
 
-      <BoxPlot data={dataForBoxPlot} size={[500,500]} />
+      <BoxPlot data={dataForBoxPlot} groupOrder={allelesStr} width="1000" height="600" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic} boxWidth="125"/>
 
       <div className="row justify-content-start">
         <Card title="Query">
@@ -62,44 +99,44 @@ class GeneAndVariantDetail extends Component {
         </Card>
 
         <Card title="Gene Information">
-          <p><b>Entrez Id:</b> {this.props.variantDetail.geneEntrezId} </p>
-          <p><b>Ensembl Id:</b> {this.props.variantDetail.geneEnsemblId} </p>
-          <p><b>Symbol:</b> {this.props.variantDetail.geneSymbol} </p>
-          <p><b>Type:</b> {this.props.variantDetail.geneType} </p>
-          <p><b>Description:</b> {this.props.variantDetail.geneDescription}</p>
-          <p><b>Chromosome:</b> {this.props.variantDetail.geneChrom} </p>
-          <p><b>Start:</b> {this.props.variantDetail.geneTSS}</p>
-          <p><b>End:</b> {this.props.variantDetail.geneTES} </p>
+          <p><b>Entrez Id:</b> {variantDetail.geneEntrezId} </p>
+          <p><b>Ensembl Id:</b> {variantDetail.geneEnsemblId} </p>
+          <p><b>Symbol:</b> {variantDetail.geneSymbol} </p>
+          <p><b>Type:</b> {variantDetail.geneType} </p>
+          <p><b>Description:</b> {variantDetail.geneDescription}</p>
+          <p><b>Chromosome:</b> {variantDetail.geneChrom} </p>
+          <p><b>Start:</b> {variantDetail.geneTSS}</p>
+          <p><b>End:</b> {variantDetail.geneTES} </p>
         </Card>
 
         <Card title="Variant Information">
-          <p><b>Chromosome:</b> {this.props.variantDetail.variantChrom} </p>
-          <p><b>Position:</b> {this.props.variantDetail.variantPos} </p>
-          <p><b>Reference:</b> {this.props.variantDetail.variantRef} </p>
-          <p><b>Alternative:</b> {this.props.variantDetail.variantAlt}</p>
-          <p><b>dbSNP:</b> {this.props.variantDetail.variantDbSNPId} </p>
+          <p><b>Chromosome:</b> {variantDetail.variantChrom} </p>
+          <p><b>Position:</b> {variantDetail.variantPos} </p>
+          <p><b>Reference:</b> {variantDetail.variantRef} </p>
+          <p><b>Alternative:</b> {variantDetail.variantAlt}</p>
+          <p><b>dbSNP:</b> {variantDetail.variantDbSNPId} </p>
         </Card>
 
         <Card title="NEPTUNE Allele Frequencies">
-          <p><b>Overall Alt. AF:</b> {this.afFormatter(this.props.variantDetail.overallAf)} </p>
-          <p><b>AFR Alt. AF:</b> {this.afFormatter(this.props.variantDetail.afrAf)} </p>
-          <p><b>AMR Alt. AF:</b> {this.afFormatter(this.props.variantDetail.amrAf)} </p>
-          <p><b>ASN Alt. AF:</b> {this.afFormatter(this.props.variantDetail.asnAf)} </p>
-          <p><b>EUR Alt. AF:</b> {this.afFormatter(this.props.variantDetail.eurAf)} </p>
+          <p><b>Overall Alt. AF:</b> {this.afFormatter(variantDetail.overallAf)} </p>
+          <p><b>AFR Alt. AF:</b> {this.afFormatter(variantDetail.afrAf)} </p>
+          <p><b>AMR Alt. AF:</b> {this.afFormatter(variantDetail.amrAf)} </p>
+          <p><b>ASN Alt. AF:</b> {this.afFormatter(variantDetail.asnAf)} </p>
+          <p><b>EUR Alt. AF:</b> {this.afFormatter(variantDetail.eurAf)} </p>
         </Card>
 
         <Card title="1000G Phase 3 Allele Frequencies">
-          <p><b>Overall Alt. AF:</b> {this.afFormatter(this.props.variantDetail._1kgOverallAf)} </p>
-          <p><b>AFR Alt. AF:</b> {this.afFormatter(this.props.variantDetail._1kgAfrAf)} </p>
-          <p><b>AMR Alt. AF:</b> {this.afFormatter(this.props.variantDetail._1kgAmrAf)} </p>
-          <p><b>EAS Alt. AF:</b> {this.afFormatter(this.props.variantDetail._1kgEasAf)} </p>
-          <p><b>SAS Alt. AF:</b> {this.afFormatter(this.props.variantDetail._1kgSasAf)} </p>
-          <p><b>EUR Alt. AF:</b> {this.afFormatter(this.props.variantDetail._1kgEurAf)} </p>
+          <p><b>Overall Alt. AF:</b> {this.afFormatter(variantDetail._1kgOverallAf)} </p>
+          <p><b>AFR Alt. AF:</b> {this.afFormatter(variantDetail._1kgAfrAf)} </p>
+          <p><b>AMR Alt. AF:</b> {this.afFormatter(variantDetail._1kgAmrAf)} </p>
+          <p><b>EAS Alt. AF:</b> {this.afFormatter(variantDetail._1kgEasAf)} </p>
+          <p><b>SAS Alt. AF:</b> {this.afFormatter(variantDetail._1kgSasAf)} </p>
+          <p><b>EUR Alt. AF:</b> {this.afFormatter(variantDetail._1kgEurAf)} </p>
         </Card>
 
         <Card title="Association">
-          <p><b>Beta:</b> { this.props.variantDetail.beta ? this.props.variantDetail.beta.toPrecision(3)  : ""} </p>
-          <p><b>t-statistic: </b> {this.props.variantDetail.tStat ? this.props.variantDetail.tStat.toPrecision(3) : ""}</p>
+          <p><b>Beta:</b> { variantDetail.beta ? variantDetail.beta.toPrecision(3)  : ""} </p>
+          <p><b>t-statistic: </b> {variantDetail.tStat ? variantDetail.tStat.toPrecision(3) : ""}</p>
           <p><b>P-value: </b> {pValFormat}</p>
         </Card>
       </div>

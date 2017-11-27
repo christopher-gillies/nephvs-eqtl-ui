@@ -1,0 +1,8 @@
+.axis--x path {
+  display: none;
+}
+
+.axis-label {
+  font-family: "Monaco";
+  stroke: black;
+}
