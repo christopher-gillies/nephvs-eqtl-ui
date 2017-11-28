@@ -133,7 +133,9 @@ class ResultTable extends Component {
     let rows = [];
     let headerCells = [];
     this.props.columns.forEach((column) => {
-      headerCells.push(column.name);
+      if(!column.excludeCsv) {
+        headerCells.push(column.name);
+      }
     });
     rows.push(headerCells.join(","))
 
@@ -154,9 +156,10 @@ class ResultTable extends Component {
     });
 
     let csv = rows.join("\n");
-    let blob = new Blob([ csv ], {type: "text/plain;charset=utf-8"});
+    //let blob = new Blob([ csv ], {type: "text/plain;charset=utf-8"});
     let filename = this.props.csvFilename ? this.props.csvFilename : "data.csv";
-    FileSaver.saveAs(blob, filename);
+    let file = new File([csv], filename, {type: "text/plain;charset=ascii"});
+    FileSaver.saveAs(file);
   }
 
 
