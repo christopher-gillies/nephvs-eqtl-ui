@@ -78,19 +78,20 @@ class GeneAndVariantDetail extends Component {
     } else if(variantDetail.geneSymbol) {
       title = (<span> Gene and Variant detail for <i> {variantDetail.geneSymbol} </i> and {variantDetail.variantStr} in {this.props.match.params.tissue}</span>);
     } else if(variantDetail.variantDbSNPId) {
-      title = (<span> Gene and Variant detail for <i> {variantDetail.entrezId} </i> and {variantDetail.variantDbSNPId} in {this.props.match.params.tissue}</span>);
+      title = (<span> Gene and Variant detail for <i> {variantDetail.geneEntrezId} </i> and {variantDetail.variantDbSNPId} in {this.props.match.params.tissue}</span>);
     } else {
-      title = (<span> Gene and Variant detail for <i> {variantDetail.entrezId} </i> and {variantDetail.variantStr} in {this.props.match.params.tissue}</span>);
+      title = (<span> Gene and Variant detail for <i> {variantDetail.geneEntrezId} </i> and {variantDetail.variantStr} in {this.props.match.params.tissue}</span>);
     }
 
 
+    let boxplotFilename = variantDetail.geneEntrezId + "_" + variantDetail.variantStr + "_" + this.props.match.params.tissue + ".svg";
 
     return(
       <div className="container-fluid">
       <div className="text-center"><h3>{title}</h3></div>
 
       <div className="text-center">
-      <BoxPlot data={dataForBoxPlot}
+      <BoxPlot data={dataForBoxPlot} filename={boxplotFilename}
         groupOrder={allelesStr} width="600" height="600" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic} boxWidth="150"/>
       </div>
       <div className="row justify-content-start">

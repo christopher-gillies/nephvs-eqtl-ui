@@ -356,13 +356,14 @@ class BoxPlot extends Component {
 
   saveImage = () => {
     let handle = select(this.node);
-    let html = handle
-      .attr("title", "test2")
+    let filename = this.props.filename ? this.props.filename : "boxplot.svg"
+    let html = handle.select("svg")
+      .attr("title", "boxplot")
       .attr("version", 1.1)
       .attr("xmlns", "http://www.w3.org/2000/svg")
-      .node().innerHTML;
+      .node().parentNode.innerHTML;
     let blob = new Blob([html], {type: "image/svg+xml"});
-    FileSaver.saveAs(blob, "boxplot.svg");
+    FileSaver.saveAs(blob, filename);
   }
 
   render() {
