@@ -117,9 +117,9 @@ class GeneAndVariantDetail extends Component {
           <p><b>Reference:</b> {variantDetail.variantRef} </p>
           <p><b>Alternative:</b> {variantDetail.variantAlt}</p>
           <p><b>dbSNP:</b> {variantDetail.variantDbSNPId} </p>
-          <p><b>Number of reference homozygotes:</b> {allelesStr[0]} {variantDetail.homRef} </p>
-          <p><b>Number of heterozygotes:</b> {allelesStr[1]} {variantDetail.het} </p>
-          <p><b>Number of alternative homozygotes:</b> {allelesStr[2]} {variantDetail.homAlt} </p>
+          <p><b>Number of reference homozygotes:</b> {allelesStr[0]} = {variantDetail.homRef} </p>
+          <p><b>Number of heterozygotes:</b> {allelesStr[1]} = {variantDetail.het} </p>
+          <p><b>Number of alternative homozygotes:</b> {allelesStr[2]} = {variantDetail.homAlt} </p>
         </Card>
 
         <Card title="NEPTUNE Allele Frequencies">

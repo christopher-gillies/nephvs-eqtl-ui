@@ -4,6 +4,7 @@ import { select, max, min, scaleLinear, scaleBand, scaleOrdinal, quantile,
 axisLeft, axisBottom, mean } from 'd3'
 import { schemeAccent } from 'd3-scale-chromatic'
 const tip = require('d3-tip')
+const FileSaver = require('file-saver');
 
 // Based on Russell Jurney’s Block https://bl.ocks.org/rjurney/e04ceddae2e8f85cf3afe4681dac1d74
 
@@ -353,9 +354,26 @@ class BoxPlot extends Component {
     //console.log(axisBottomLabel.node().getBoundingClientRect().width);
    }
 
+  saveImage = () => {
+    let handle = select(this.node);
+    let html = handle
+      .attr("title", "test2")
+      .attr("version", 1.1)
+      .attr("xmlns", "http://www.w3.org/2000/svg")
+      .node().innerHTML;
+    let blob = new Blob([html], {type: "image/svg+xml"});
+    FileSaver.saveAs(blob, "boxplot.svg");
+  }
+
   render() {
         return (
-          <div ref={node => this.node = node}>
+          <div>
+            <div ref={node => this.node = node}>
+            </div>
+            <div className="text-right">
+              <button className="btn btn-light fa fa-download" onClick={ () => this.saveImage() }>
+              </button>
+            </div>
           </div>
         );
      }

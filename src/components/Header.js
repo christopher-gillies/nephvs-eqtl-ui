@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom'
 import SearchFormState from '../containers/SearchFormState'
 import './Header.css'
-import logo from '../eQTLBrowser_Logo_MaizeAndBlue.png'
+import logo from '../eQTLBrowser_Logo.svg'
 
 class Header extends Component {
   render() {
