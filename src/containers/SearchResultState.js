@@ -11,6 +11,7 @@ const mapStateToProps = (state, ownProps) => {
     filters: state.searchResult.filters,
     glomResults: state.searchResult.glomResults,
     tubResults: state.searchResult.tubResults,
+    dapResult: state.searchResult.dapResult,
     query: ownProps.match.params.query,
     queryType: state.searchResult.queryType
   }

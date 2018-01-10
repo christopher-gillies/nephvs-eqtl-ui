@@ -88,11 +88,15 @@ function requestQueryResults() {
   }
 }
 
+/*
+This function pulls out necessary information out of the JSON results
+*/
 function receiveQueryResults(json) {
   return {
     type: RECEIVE_QUERY_RESULTS,
     glomResults: queryService.transformPeerEQTLResultList(json.glom),
     tubResults: queryService.transformPeerEQTLResultList(json.tub),
+    dapResult: json.dapResult,
     queryType: json.query.type
   }
 }
@@ -100,6 +104,7 @@ function receiveQueryResults(json) {
 
 export function fetchQueryResults(query, maxPVal = 0.05) {
   return function(dispatch) {
+    //update state with request action
     dispatch(requestQueryResults());
     let url = queryService.makeQuery("/query", {
       query: query,
@@ -115,6 +120,7 @@ export function fetchQueryResults(query, maxPVal = 0.05) {
         })
       .then(json => {
         setTimeout(() => {
+          //update state with receive action
           dispatch(receiveQueryResults(json))
         }, 0)
 

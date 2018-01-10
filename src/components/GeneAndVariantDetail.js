@@ -92,7 +92,7 @@ class GeneAndVariantDetail extends Component {
 
       <div className="text-center">
       <BoxPlot data={dataForBoxPlot} filename={boxplotFilename}
-        groupOrder={allelesStr} width="600" height="600" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic} boxWidth="150"/>
+        groupOrder={allelesStr} width="650" height="650" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic} boxWidth="150"/>
       </div>
       <div className="row justify-content-start">
         <Card title="Query">

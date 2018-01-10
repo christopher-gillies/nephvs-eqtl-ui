@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './SearchForm.css'
 import ResultTable from './ResultTable'
 import { Link } from 'react-router-dom'
-
+import ClusterPlot from './ClusterPlot'
 class SearchResult extends Component {
 
   componentDidMount = () =>  {
@@ -208,6 +208,24 @@ class SearchResult extends Component {
     let csvFilename = this.props.currentTab === "glom" ?  "glom" : "tub";
     csvFilename += '_' + this.props.query + ".csv";
 
+
+    let clusterPlot = null;
+    //if this is a gene result
+    if(this.props.queryType === "GeneSymbol" || this.props.queryType === "Entrez" || this.props.queryType === "Ensembl") {
+      let tissue = null;
+      if(this.props.currentTab === "tub") {
+        tissue = "tube";
+      } else {
+        tissue = "glom";
+      }
+      clusterPlot = (<div>
+        <h3> DAP Fine Mapping Result </h3>
+        <ClusterPlot height={400} width={800}  gene={this.props.dapResult.gene} clusters={this.props.dapResult.tissues[tissue].clusters}
+        expSize={this.props.dapResult.tissues[tissue].expSize} />
+        </div>
+      );
+    }
+
     return(
       <div>
         <h1>Result for: <span className={this.props.queryType === "GeneSymbol" ? "font-italic" : ""}>
@@ -227,7 +245,13 @@ class SearchResult extends Component {
             { filters }
           </div>
           <br />
+          <div className="text-center">
+            {clusterPlot}
+          </div>
           <br />
+          <div className="text-center">
+          <h3> Matrix eQTL Results </h3>
+          </div>
           <ResultTable data={ this.props.currentTab === "glom" ?  this.props.glomResults : this.props.tubResults}
             columns={ columns } csvFilename={csvFilename} />
         </div>

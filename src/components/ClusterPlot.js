@@ -1,288 +1,352 @@
 import React, { Component } from 'react'
 import './ClusterPlot.css'
-import { select, max, min, scaleLinear, scaleBand, scaleOrdinal, quantile,
-axisLeft, axisBottom, mean, deviation } from 'd3'
+import { select, max, min, scaleLinear, scaleOrdinal,
+axisLeft, axisBottom, mean } from 'd3'
 import { schemeAccent } from 'd3-scale-chromatic'
 const tip = require('d3-tip')
 const FileSaver = require('file-saver');
 
 // Based on Russell Jurney’s Block https://bl.ocks.org/rjurney/e04ceddae2e8f85cf3afe4681dac1d74
 
-class BoxPlot extends Component {
+class ClusterPlot extends Component {
    constructor(props){
       super(props)
-      this.createBoxPlot = this.createBoxPlot.bind(this)
+      this.createPlot = this.createPlot.bind(this)
       this.formatDataForD3 = this.formatDataForD3.bind(this)
-   }
-   componentDidMount() {
-      this.createBoxPlot()
-   }
-   componentDidUpdate() {
-     this.createBoxPlot()
+      this.state = {
+        selectedView: "both"
+      }
    }
 
-   formatDataForD3() {
+   componentDidMount() {
+      this.createPlot(this.props);
+   }
+
+   componentWillUpdate(nextProps,nextState) {
+     //only redraw the plot if the properties change
+     //if the state changes then we are going to just do a transition
+     if(this.state.selectedView !== nextState.selectedView) {
+
+     } else {
+       this.createPlot(nextProps);
+     }
+   }
+
+   //componentDidUpdate() {
+    // this.createPlot();
+   //}
+
+   formatDataForD3(props) {
 
      //perform a shallow copy of the input data
-     const gene = this.props.gene;
-     const clusters = this.probs.clusters;
+     const gene = props.gene;
+     const clusters = props.clusters;
 
+     let minX = null;
+     let maxX = null;
+     let minY = 0;
+     let maxY = 1;
+     const scaleFactor = 1000000
+     let genePlotData = {
+       x: gene.start / scaleFactor,
+       start: gene.start,
+       end: gene.end,
+       y: 1.1,
+       width: gene.end / scaleFactor - gene.start / scaleFactor + 1,
+       height: 0.05,
+       name: gene.symbol,
+       chrom: gene.chrom,
+       strand: gene.strand,
+       description: gene.description,
+       numClusters: clusters.length,
+       expSize: props.expSize
+     }
+
+     let clusterPlotData = []
+     let variantPlotData = []
+     let colors = []
+     let varPos_s_all = []
+     for(let i = 0; i < clusters.length; i++) {
+       let cluster = clusters[i]
+       let clusterPoint = {}
+       clusterPoint["y"] = cluster.pip;
+       clusterPoint["color"] = cluster.cluster;
+       clusterPoint["numVariants"] = cluster.variants.length;
+       colors.push(cluster.cluster);
+       let variants = cluster.variants;
+       let varPos_s = []
+       for(let j = 0; j < variants.length; j++ ) {
+         let variant = variants[j];
+         let variantPoint = {}
+         variantPoint["x"] = variant.pos / scaleFactor;
+         variantPoint["pos"] = variant.pos;
+         variantPoint["variantStr"] = variant.variantStr;
+         varPos_s.push(variant.pos / scaleFactor);
+         varPos_s_all.push(variant.pos / scaleFactor);
+         variantPoint["y"] = variant.pip;
+         variantPoint["color"] = cluster.cluster;
+         variantPlotData.push(variantPoint)
+       }
+       //let clusterPoint["x"] be the mean position of the cluster
+       clusterPoint["x"] = mean(varPos_s);
+       clusterPoint["pos"] = Math.round(mean(varPos_s) * scaleFactor);
+       clusterPlotData.push(clusterPoint);
+     }
+
+     varPos_s_all.push(gene.start / scaleFactor)
+     minX = min(varPos_s_all) - 1;
+     varPos_s_all.push(gene.end / scaleFactor)
+     maxX = max(varPos_s_all) + 1;
+
+     //
+     let colorScale = scaleOrdinal(schemeAccent)
+       .domain(colors);
 
      return {
-       "boxPlotData": boxPlotData,
-       "groups": groups,
+       "clusterPlotData": clusterPlotData,
+       "variantPlotData": variantPlotData,
+       "genePlotData": genePlotData,
        "colorScale": colorScale,
        "minY": minY,
        "maxY": maxY,
+       "maxX": maxX,
+       "minX": minX
      }
    }
 
-   createBoxPlot() {
-    const node = this.node
+   createPlot(props) {
+      const node = this.node
 
-    //clear node
-    select(node).html("");
+      //clear node
+      select(node).html("");
 
-    if(this.props.data === null && this.props.data === undefined &&
-      this.props.data.length === 0) {
-        //dont do anything
-        return;
-     }
-
-    const { boxPlotData, groups, colorScale, minY, maxY  } = this.formatDataForD3();
-    console.log(boxPlotData)
-
-    //set sizes of plot and margin
-    const totalWidth = this.props.width;
-    const totalHeight = this.props.height;
-    const barWidth = this.props.boxWidth;
-
-    const margin = {top: 30, right: 30, bottom: 60, left: 30};
-
-    const width = totalWidth - margin.left - margin.right,
-        height = totalHeight - margin.top - margin.bottom;
-
-    const xAxisShift = 35;
-
-    //define axes
-    const xScale = scaleBand()
-      .domain(groups)
-      .rangeRound([0, width])
-      .padding(0)
-
-    const computedBandWidth = xScale.bandwidth()
-
-    const yScale = scaleLinear()
-      .domain([minY, maxY])
-      .rangeRound([height-10, 0]);
+      const { clusterPlotData, variantPlotData, genePlotData, colorScale, minY, maxY, minX, maxX  } = this.formatDataForD3(props);
 
 
-    const svg = select(node).append("svg")
-      .attr("width", totalWidth)
-      .attr("height", totalHeight)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      //set sizes of plot and margin
+      const totalWidth = props.width;
+      const totalHeight = props.height;
 
-    //full shift in is really xAxisShift + margin.left
-    const g = svg.append("g")
-      .attr("transform", "translate(" + xAxisShift + ",0)");
 
-      // Draw the box plot vertical lines
-    const verticalLines = g.selectAll(".verticalLines")
-      .data(boxPlotData)
-      .enter()
-      .append("line")
-      .attr("x1", function(datum) {
-          return xScale(datum.group) + computedBandWidth / 2;
-        }
-      )
-      .attr("y1", function(datum) {
-          var whisker = datum.whiskers[0];
-          return yScale(whisker);
-        }
-      )
-      .attr("x2", function(datum) {
-          return xScale(datum.group) + computedBandWidth / 2;
-        }
-      )
-      .attr("y2", function(datum) {
-          var whisker = datum.whiskers[1];
-          return yScale(whisker);
-        }
-      )
-      .attr("stroke", "#000")
-      .attr("stroke-width", 1)
-      .attr("fill", "none");
+      const margin = {top: 60, right: 50, bottom: 60, left: 50};
 
-    let createParagraph = function(label,data) {
-      return "<p style='margin: 0; padding: 0;'><strong>" + label + ":</strong> " + data + "</p>"
-    }
+      const width = totalWidth - margin.left - margin.right,
+          height = totalHeight - margin.top - margin.bottom;
 
-    const boxPlotToolTip = tip()
-      .attr('class', 'd3-tip')
-      .offset([-10, 0])
-      .html(function(d) {
+      const xAxisShift = 35;
 
-        let html = createParagraph("N",d.n) +
-                    createParagraph("1st Quartile",d.quartile[0].toPrecision(3)) +
-                    createParagraph("Median",d.quartile[1].toPrecision(3)) +
-                    createParagraph("Mean",d.mean.toPrecision(3)) +
-                    createParagraph("Std. dev.",d.stdDev.toPrecision(3)) +
-                    createParagraph("3rd Quartile",d.quartile[2].toPrecision(3)) +
-                    createParagraph("Min.",d.min.toPrecision(3)) +
-                    createParagraph("Max.",d.max.toPrecision(3)) +
-                    createParagraph("IQR", (d.quartile[2]-d.quartile[0]).toPrecision(3));
-        return html;
-      })
+      //define axes
+      const xScale = scaleLinear()
+        .domain([minX, maxX])
+        .rangeRound([0, width]);
 
-    svg.call(boxPlotToolTip);
+      const yScale = scaleLinear()
+        .domain([minY, maxY])
+        .rangeRound([height-10, 0]);
 
-    const outlierToolTip = tip()
-      .attr('class', 'd3-tip')
-      .offset([-10, 0])
-      .html(function(d) {
-        return createParagraph("Group",d.group) +
-            createParagraph("Value",d.val);
-      })
 
-    svg.call(outlierToolTip);
+      var svg = select(node).append("svg")
+        .attr("width", totalWidth)
+        .attr("height", totalHeight)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    const rects = g.selectAll("rect")
-      .data(boxPlotData)
-      .enter()
-      .append("rect")
-      .attr("width", barWidth)
-      .attr("height", function(datum) {
-          var quartiles = datum.quartile;
-          var height = yScale(quartiles[0]) - yScale(quartiles[2]);
-          return height;
-        }
-      )
-      .attr("x", function(datum) {
-          // xScale(datum.group) + computedBandWidth / 2 is the center
-          // we go back half the width of the box and then go over the full width
-          return xScale(datum.group) + computedBandWidth / 2 - barWidth/2;
-        }
-      )
-      .attr("y", function(datum) {
-          return yScale(datum.quartile[2]); //this defines the top positon
-        }
-      )
-      .attr("fill", function(datum) {
-        return datum.color;
-        }
-      )
-      .attr("stroke", "#000")
-      .attr("stroke-width", 1)
-      .on('mouseover', boxPlotToolTip.show)
-      .on('mouseout', boxPlotToolTip.hide);
+      const g = svg.append("g")
+        .attr("transform", "translate(" + xAxisShift + ",0)");
 
-    const outliers = g.selectAll(".outliers").data(boxPlotData).enter().selectAll(".outliers")
-      .data(function(d, i) {
-        return d.outliers;
-      }).enter().append("circle")
-      .attr("cx", function(d) {
-        return xScale(d.group) + computedBandWidth / 2 ;
-      })
-      .attr("cy", function(d) { return yScale(d.val); })
-      .attr("stroke",function(d) { return colorScale(d.group); })
-      .attr("fill",function(d) { return colorScale(d.group); })
-      .attr("r","3")
-      .on('mouseover', outlierToolTip.show)
-      .on('mouseout', outlierToolTip.hide);
+      //Add clusters
+      const clusters = g.selectAll(".clusters").data(clusterPlotData)
+        .enter().append("circle")
+        .attr("cx", function(d) {
+          return xScale(d.x)
+        })
+        .attr("cy", function(d) { return yScale(d.y); })
+        .attr("stroke",function(d) { return colorScale(d.color); })
+        .attr("fill",function(d) { return colorScale(d.color); })
+        .attr("r","5")
+        .attr("class","clusters")
 
-    // Now render all the horizontal lines at once - the whiskers and the median
-    const horizontalLineConfigs = [
-      // Top whisker
-      {
-        x1: function(datum) { return xScale(datum.group) + computedBandWidth / 2 - barWidth/2},
-        y1: function(datum) { return yScale(datum.whiskers[1]) },
-        x2: function(datum) { return xScale(datum.group) + computedBandWidth / 2 + barWidth/2 },
-        y2: function(datum) { return yScale(datum.whiskers[1]) }
-      },
-      // Median line
-      {
-        x1: function(datum) { return xScale(datum.group) + computedBandWidth / 2 - barWidth/2},
-        y1: function(datum) { return yScale(datum.quartile[1]) },
-        x2: function(datum) { return xScale(datum.group) + computedBandWidth / 2 + barWidth/2 },
-        y2: function(datum) { return yScale(datum.quartile[1]) }
-      },
-      // Bottom whisker
-      {
-        x1: function(datum) { return xScale(datum.group) + computedBandWidth / 2 - barWidth/2},
-        y1: function(datum) { return yScale(datum.whiskers[0]) },
-        x2: function(datum) { return xScale(datum.group) + computedBandWidth / 2 + barWidth/2 },
-        y2: function(datum) { return yScale(datum.whiskers[0]) }
+      if(this.state.selectedView === "both" || this.state.selectedView === "clusters") {
+        clusters.style("opacity","1")
+      } else {
+        clusters.style("opacity","0")
       }
-    ];
 
-    for(let i=0; i < horizontalLineConfigs.length; i++) {
-      var lineConfig = horizontalLineConfigs[i];
+      //Add variants
+      const variants = g.selectAll(".variants").data(variantPlotData)
+        .enter().append("circle")
+        .attr("cx", function(d) {
+          return xScale(d.x)
+        })
+        .attr("cy", function(d) { return yScale(d.y); })
+        .attr("stroke",function(d) { return colorScale(d.color); })
+        .attr("fill",function(d) { return colorScale(d.color); })
+        .attr("r","2")
+        .attr("class","variants")
 
-      // Draw the whiskers at the min for this series
-      const horizontalLine = g.selectAll(".whiskers")
-        .data(boxPlotData)
-        .enter()
-        .append("line")
-        .attr("x1", lineConfig.x1)
-        .attr("y1", lineConfig.y1)
-        .attr("x2", lineConfig.x2)
-        .attr("y2", lineConfig.y2)
-        .attr("stroke", "#000")
+        if(this.state.selectedView === "both" || this.state.selectedView === "variants") {
+          variants.style("opacity","1")
+        } else {
+          variants.style("opacity","0")
+        }
+
+      //Add gene
+
+      let genePlotWidth = xScale(genePlotData.width) - xScale(0);
+      let genePlotHeight = yScale(0) - yScale(genePlotData.height);
+      let genePlotX = xScale(genePlotData.x);
+      let genePlotY = yScale(genePlotData.y);
+
+      var geneRect = g.append("rect")
+        .attr("width", genePlotWidth )
+        .attr("height",  genePlotHeight)
+        .attr("x", genePlotX)
+        .attr("y", genePlotY)
+        .attr("fill", "#4682b4")
+        .attr("stroke", "#4682b4")
         .attr("stroke-width", 1)
-        .attr("fill", "none");
-    }
 
-      // Move the left axis over 25 pixels, and the bottom axis over 35 pixels
-    const axisLeftG = svg.append("g").attr("transform", "translate(25,0)");
-    const axisBottomG = svg.append("g").attr("transform", "translate(" + xAxisShift + ",0)");
+      this.drawArrowEnd(g,genePlotData.strand,genePlotX,genePlotY,genePlotHeight,genePlotWidth);
+
+      // add gene label
+      var text = g.selectAll("text")
+        .data([genePlotData])
+        .enter()
+        .append("text")
+        .text(genePlotData.name)
+        .attr("x", xScale(genePlotData.x) + xScale(genePlotData.width/2) - xScale(0))
+        .attr("y", yScale(genePlotData.y) - 10)
+        .attr("font-family", "sans-serif")
+        .attr("font-style", "italic")
+        .attr("font-size", "15px")
+        .attr("fill", "black");
+
+      let textWidth = text.node().getBoundingClientRect().width;
+      text.attr("x", xScale(genePlotData.x) + xScale(genePlotData.width/2) - xScale(0) - textWidth/2);
+
+      // Move the left axis over 25 pixels, and the top axis over 35 pixels
+      var axisLeftG = svg.append("g").attr("transform", "translate(25,0)");
+      var axisBottomG = svg.append("g").attr("transform", "translate(" + xAxisShift +",0)");
 
       // Setup a scale on the left
-    const axisLeftPlot = axisLeft(yScale);
-    axisLeftG.append("g")
-      .call(axisLeftPlot);
+      var axisLeftObj = axisLeft(yScale).tickValues([0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]);
+      axisLeftG.append("g")
+        .call(axisLeftObj);
 
-    const yLabel = this.props.ylab;
-    const italicPart = this.props.ylabItalic;
+      //x-axis label
+      const axisLeftLabel = axisLeftG.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -(30 + 25 + 10)) //shifts the axis left
+        .attr("x", -height / 2 ) //shift it down
+        .attr("dy", "30px")
+        .attr("text-anchor", "end")
+        .text("Posterior Inclusion Probability");
 
-    const axisLeftLabel = axisLeftG.append("text")
-      .attr("class", "axis-label")
-      .attr("transform", "rotate(-90)")
-      .attr("y", -(30 + 25 + 10))
-      .attr("x", -height / 2 )
-      .attr("dy", "30px")
-      .attr("text-anchor", "end")
-      .text(yLabel);
+      const axisLeftLabelHeight = axisLeftLabel.node().getBoundingClientRect().height;
+      axisLeftLabel.attr("x", -height / 2 + axisLeftLabelHeight / 2);
 
-    axisLeftLabel.append("tspan")
-      .attr("font-style","italic")
-      .text(italicPart);
+      // Setup a series axis on the top
+      var axisBottomObj = axisBottom(xScale);
 
-    const axisLeftLabelHeight = axisLeftLabel.node().getBoundingClientRect().height;
-    axisLeftLabel.attr("x", -height / 2 + axisLeftLabelHeight / 2);
+      axisBottomG.append("g")
+        .attr("transform", "translate(0," + yScale(0) + ")")
+        .call(axisBottomObj)
 
-    // Setup a series axis on the top
-    const axisBottomPlot = axisBottom(xScale);
+      //
+      const axisBottomLabel = axisBottomG.append("text")
+        .attr("class", "axis-label")
+        .attr("dy", "30px")
+        .attr("text-anchor", "end")
+        .attr("y", height + 10)
+        .attr("x", width / 2)
+        .text("Position (mb) on chr" + genePlotData.chrom);
 
-    axisBottomG.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(axisBottomPlot);
+      //re-center the axis label based on the size of the text
+      const axisLabelWidth = axisBottomLabel.node().getBoundingClientRect().width;
+      axisBottomLabel.attr("x", width / 2 + axisLabelWidth / 2);
 
-    const xLabel = this.props.xlab;
 
-    const axisBottomLabel = axisBottomG.append("text")
-      .attr("class", "axis-label")
-      .attr("dy", "30px")
-      .attr("text-anchor", "end")
-      .attr("y", height + 10)
-      .attr("x", width / 2)
-      .text(xLabel);
+      //add tool tips for points
 
-    //re-center the axis label based on the size of the text
-    const axisLabelWidth = axisBottomLabel.node().getBoundingClientRect().width;
-    axisBottomLabel.attr("x", width / 2 + axisLabelWidth / 2);
-    //console.log(axisBottomLabel.node().getBoundingClientRect().width);
+      let createParagraph = function(label,data) {
+        return "<p style='margin: 0; padding: 0;'><strong>" + label + ":</strong> " + data + "</p>"
+      }
+
+      const clusterToolTip = tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+          return createParagraph("Cluster",d.color) +
+              createParagraph("PIP",d.y) + createParagraph("Position",d.pos) +
+              createParagraph("# of Variants",d.numVariants)
+        })
+      svg.call(clusterToolTip);
+
+      const variantToolTip = tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+          return createParagraph("Variant",d.variantStr) + createParagraph("Cluster",d.color) +
+              createParagraph("PIP",d.y) + createParagraph("Position",d.pos)
+        })
+      svg.call(variantToolTip);
+
+
+
+      clusters.on('mouseover', clusterToolTip.show)
+            .on('mouseout', clusterToolTip.hide);
+      variants.on('mouseover', variantToolTip.show)
+            .on('mouseout', variantToolTip.hide);
+
+      // add gene tool tip
+
+      const geneToolTip = tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(createParagraph("Chrom","chr" + genePlotData.chrom ) +
+            createParagraph("Start",genePlotData.start) +
+            createParagraph("End",genePlotData.end) +
+              createParagraph("Description",genePlotData.description) +
+              createParagraph("# of Clusters",genePlotData.numClusters) +
+              createParagraph("Exp. # of eQTLs",genePlotData.expSize)
+            )
+      svg.call(geneToolTip);
+
+      geneRect.on('mouseover', geneToolTip.show)
+            .on('mouseout', geneToolTip.hide);
    }
+
+  drawArrowEnd = (handle,strand,x,y,height,width) => {
+    //Draw polygon in SVG
+    //https://www.w3schools.com/graphics/svg_polygon.asp
+    let verticalPad = 5
+    let horizontalPad = 10
+
+    if(strand === "-") {
+      let p1 = x + "," + (y - verticalPad);
+      let p2 = x + "," + (y + height + verticalPad);
+      let p3 = (x - horizontalPad) + "," + (y + height / 2)
+
+      handle.append("polygon")
+      .attr("points", [p1,p2,p3].join(" "))
+      .attr("fill", "#4682b4")
+      .attr("stroke", "#4682b4")
+      .attr("stroke-width", 1)
+
+    } else if(strand === "+") {
+      let p1 = (x + width) + "," + (y - verticalPad);
+      let p2 = (x + width) + "," + (y + height + verticalPad);
+      let p3 = (x + horizontalPad + width) + "," + (y + height / 2)
+
+      handle.append("polygon")
+      .attr("points", [p1,p2,p3].join(" "))
+      .attr("fill", "#4682b4")
+      .attr("stroke", "#4682b4")
+      .attr("stroke-width", 1)
+
+    }
+  }
 
   saveImage = () => {
     let handle = select(this.node);
@@ -296,11 +360,55 @@ class BoxPlot extends Component {
     FileSaver.saveAs(blob, filename);
   }
 
+  handleViewChange = (changeEvent) => {
+    const newVal = changeEvent.target.value;
+    this.setState({
+      selectedView: newVal
+    });
+    let variants = select(this.node).selectAll(".variants");
+    let clusters = select(this.node).selectAll(".clusters");
+    if(newVal === "both") {
+      console.log(variants)
+      console.log(clusters)
+      variants.transition().duration(1000).style("opacity","1");
+      clusters.transition().duration(1000).style("opacity","1");
+    } else if(newVal === "clusters") {
+      console.log(variants)
+      console.log(clusters)
+      variants.transition().duration(1000).style("opacity","0");
+      clusters.transition().duration(1000).style("opacity","1");
+    } else {
+      console.log(variants)
+      console.log(clusters)
+      variants.transition().duration(1000).style("opacity","1");
+      clusters.transition().duration(1000).style("opacity","0");
+    }
+  }
+
   render() {
         return (
           <div>
             <div ref={node => this.node = node}>
             </div>
+            <form>
+            <div className="btn-group" data-toggle="buttons">
+              <label className={ this.state.selectedView === "both" ? "btn btn-secondary active" : "btn btn-secondary" }>
+                <input type="radio" value="both" checked={this.state.selectedView === "both"}
+                onChange={this.handleViewChange}
+                /> Both
+              </label>
+              <label className={ this.state.selectedView === "clusters" ? "btn btn-secondary active" : "btn btn-secondary" }>
+                <input type="radio" value="clusters"  checked={this.state.selectedView === "clusters"}
+                onChange={this.handleViewChange}
+                /> Clusters
+              </label>
+              <label className={ this.state.selectedView === "variants" ? "btn btn-secondary active" : "btn btn-secondary" }>
+                <input type="radio"  value="variants"  checked={this.state.selectedView === "variants"}
+                onChange={this.handleViewChange}
+                /> Variants
+              </label>
+            </div>
+            </form>
             <div className="text-right">
               <button className="btn btn-light fa fa-download" onClick={ () => this.saveImage() }>
               </button>
@@ -310,16 +418,4 @@ class BoxPlot extends Component {
      }
 }
 
-function computeQuartiles(d) {
-  return [
-    quantile(d, .25),
-    quantile(d, .5),
-    quantile(d, .75)
-  ];
-}
-
-BoxPlot.defaultProps = {
-  boxWidth: 100
-}
-
-export default BoxPlot
+export default ClusterPlot

@@ -138,7 +138,7 @@ class BoxPlot extends Component {
     const totalHeight = this.props.height;
     const barWidth = this.props.boxWidth;
 
-    const margin = {top: 30, right: 30, bottom: 60, left: 30};
+    const margin = {top: 60, right: 50, bottom: 60, left: 50};
 
     const width = totalWidth - margin.left - margin.right,
         height = totalHeight - margin.top - margin.bottom;
@@ -169,7 +169,7 @@ class BoxPlot extends Component {
       .attr("transform", "translate(" + xAxisShift + ",0)");
 
       // Draw the box plot vertical lines
-    const verticalLines = g.selectAll(".verticalLines")
+    g.selectAll(".verticalLines")
       .data(boxPlotData)
       .enter()
       .append("line")
@@ -228,7 +228,8 @@ class BoxPlot extends Component {
 
     svg.call(outlierToolTip);
 
-    const rects = g.selectAll("rect")
+    //draw rectangles
+    g.selectAll("rect")
       .data(boxPlotData)
       .enter()
       .append("rect")
@@ -258,7 +259,8 @@ class BoxPlot extends Component {
       .on('mouseover', boxPlotToolTip.show)
       .on('mouseout', boxPlotToolTip.hide);
 
-    const outliers = g.selectAll(".outliers").data(boxPlotData).enter().selectAll(".outliers")
+    //draw outliers
+    g.selectAll(".outliers").data(boxPlotData).enter().selectAll(".outliers")
       .data(function(d, i) {
         return d.outliers;
       }).enter().append("circle")
@@ -301,7 +303,7 @@ class BoxPlot extends Component {
       var lineConfig = horizontalLineConfigs[i];
 
       // Draw the whiskers at the min for this series
-      const horizontalLine = g.selectAll(".whiskers")
+      g.selectAll(".whiskers")
         .data(boxPlotData)
         .enter()
         .append("line")

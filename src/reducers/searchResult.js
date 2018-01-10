@@ -29,6 +29,8 @@ const searchResult = (state = {}, action) => {
         ...state,
         glomResults: [],
         tubResults: [],
+        dapResults: {},
+        queryType: null,
         isFetching: true
       };
       break;
@@ -37,6 +39,7 @@ const searchResult = (state = {}, action) => {
         ...state,
         glomResults: action.glomResults,
         tubResults: action.tubResults,
+        dapResult: action.dapResult,
         queryType: action.queryType,
         isFetching: false
       };
