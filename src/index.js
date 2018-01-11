@@ -31,7 +31,6 @@ let initState = {
     tubResults: [],
     queryType: "",
     filters: {
-      visible: false,
       maxPVal: 0.05
     }
   },

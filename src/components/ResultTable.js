@@ -6,8 +6,14 @@ class ResultTable extends Component {
 
   constructor(props) {
     super(props);
+
+    let defaultSortCol = props.columns[0].key;
+
+    if(props.defaultSortCol) {
+      defaultSortCol = props.defaultSortCol;
+    }
     this.state = {
-      sortCol: "pVal",
+      sortCol: defaultSortCol,
       sortColClass: "fa fa-sort-asc",
       pageSize: 10,
       currentPage: 1,

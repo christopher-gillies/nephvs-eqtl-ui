@@ -59,7 +59,8 @@ class ClusterPlot extends Component {
        strand: gene.strand,
        description: gene.description,
        numClusters: clusters.length,
-       expSize: props.expSize
+       expSize: props.expSize,
+       geneNull: props.geneNull
      }
 
      let clusterPlotData = []
@@ -278,7 +279,7 @@ class ClusterPlot extends Component {
         .offset([-10, 0])
         .html(function(d) {
           return createParagraph("Cluster",d.color) +
-              createParagraph("PIP",d.y) + createParagraph("Position",d.pos) +
+              createParagraph("PIP",d.y) +
               createParagraph("# of Variants",d.numVariants)
         })
       svg.call(clusterToolTip);
@@ -309,7 +310,8 @@ class ClusterPlot extends Component {
             createParagraph("End",genePlotData.end) +
               createParagraph("Description",genePlotData.description) +
               createParagraph("# of Clusters",genePlotData.numClusters) +
-              createParagraph("Exp. # of eQTLs",genePlotData.expSize)
+              createParagraph("Exp. # of eQTLs",genePlotData.expSize) +
+              createParagraph("Prob. of no eQTL",genePlotData.geneNull)
             )
       svg.call(geneToolTip);
 
@@ -350,9 +352,9 @@ class ClusterPlot extends Component {
 
   saveImage = () => {
     let handle = select(this.node);
-    let filename = this.props.filename ? this.props.filename : "boxplot.svg"
+    let filename = this.props.filename ? this.props.filename : "dap_result.svg"
     let html = handle.select("svg")
-      .attr("title", "boxplot")
+      .attr("title", "dap_result")
       .attr("version", 1.1)
       .attr("xmlns", "http://www.w3.org/2000/svg")
       .node().parentNode.innerHTML;

@@ -45,7 +45,6 @@ export const setTab = (tab) => ({
 
 export const setFilters = (filters) => ({
   type: SET_FILTERS,
-  visible: filters.visible,
   maxPVal: filters.maxPVal
 })
 
