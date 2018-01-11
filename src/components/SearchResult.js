@@ -213,6 +213,33 @@ class SearchResult extends Component {
     let DAPFineMapping = null;
     let DAPTableColumns = [
       {
+        key: 'entrezId',
+        name: "Entrez Id",
+        formatter: (rowData) => {
+          let linkTo = "/searchResult/" + rowData.entrezId;
+          return (<Link onClick={() => this.linkClick(0.05)} to={linkTo}>{rowData.entrezId}</Link>);
+        },
+        csvFormatter: (rowData) => rowData.entrezId
+      },
+      {
+        key: 'symbol',
+        name: "Gene Symbol",
+        formatter: (rowData) => {
+          let linkTo = "/searchResult/" + rowData.symbol;
+          return (<Link onClick={() => this.linkClick(0.05)} to={linkTo}><i>{rowData.symbol}</i></Link>)
+        },
+        csvFormatter: (rowData) => rowData.symbol
+      },
+      {
+        key: 'dbSNPId',
+        name: "dbSNPId",
+        formatter: (rowData) => {
+          let linkTo = "/searchResult/" + rowData.dbSNPId;
+          return (<Link to={linkTo}>{rowData.dbSNPId}</Link>)
+        },
+        csvFormatter: (rowData) => rowData.dbSNPId
+      },
+      {
         key: 'chrom:Pos',
         name: "Chr:pos",
         formatter: (rowData) => {
@@ -234,6 +261,12 @@ class SearchResult extends Component {
         name: "Alt",
         formatter: (rowData) => rowData.alt,
         csvFormatter: (rowData) => rowData.alt,
+      },
+      {
+        key: 'af',
+        name: "Alt. AF",
+        formatter: (rowData) => rowData.af.toPrecision(3),
+        csvFormatter: (rowData) => rowData.af,
       },
       {
         key: 'variantPip',
@@ -280,10 +313,14 @@ class SearchResult extends Component {
       tissueRes.clusters.forEach( (cluster) => {
         cluster.variants.forEach( (variant ) => {
           let obj = {
+            entrezId: this.props.dapResult.gene.entrezId,
+            symbol: this.props.dapResult.gene.symbol,
             chrom: variant.chrom,
             pos: variant.pos,
             ref: variant.ref,
             alt: variant.alt,
+            dbSNPId: variant.dbSNPId,
+            af: variant.af,
             variantPip: variant.pip,
             cluster: cluster.cluster,
             clusterPip: cluster.pip,
