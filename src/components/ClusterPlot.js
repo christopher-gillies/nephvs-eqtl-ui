@@ -60,7 +60,8 @@ class ClusterPlot extends Component {
        description: gene.description,
        numClusters: clusters.length,
        expSize: props.expSize,
-       geneNull: props.geneNull
+       geneNull: props.geneNull,
+       geneFDR: props.fdr
      }
 
      let clusterPlotData = []
@@ -311,7 +312,8 @@ class ClusterPlot extends Component {
               createParagraph("Description",genePlotData.description) +
               createParagraph("# of Clusters",genePlotData.numClusters) +
               createParagraph("Exp. # of eQTLs",genePlotData.expSize) +
-              createParagraph("Prob. of no eQTL",genePlotData.geneNull)
+              createParagraph("Prob. of no eQTL",genePlotData.geneNull) +
+              createParagraph("FDR",genePlotData.geneFDR)
             )
       svg.call(geneToolTip);
 

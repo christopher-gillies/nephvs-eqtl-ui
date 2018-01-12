@@ -209,7 +209,9 @@ class SearchResult extends Component {
       );
 
 
-
+    /*
+      DAP Plot and Table
+    */
     let DAPFineMapping = null;
     let DAPTableColumns = [
       {
@@ -291,6 +293,12 @@ class SearchResult extends Component {
         name: "# of variants in cluster",
         formatter: (rowData) => rowData.clusterVars,
         csvFormatter: (rowData) => rowData.clusterVars,
+      },
+      {
+        key: 'fdr',
+        name: "Gene FDR",
+        formatter: (rowData) => rowData.geneFDR.toPrecision(3),
+        csvFormatter: (rowData) => rowData.geneFDR.toPrecision(3),
       }
     ];
 
@@ -298,7 +306,7 @@ class SearchResult extends Component {
     DAPCsvFilename += '_DAP_' + this.props.query + ".csv";
 
 
-    //ONLY SHOW if this is a gene result
+    //ONLY SHOW DAPPlot and Table if this is a gene result
     if(this.props.queryType === "GeneSymbol" || this.props.queryType === "Entrez" || this.props.queryType === "Ensembl") {
       let tissue = null;
       if(this.props.currentTab === "tub") {
@@ -324,7 +332,8 @@ class SearchResult extends Component {
             variantPip: variant.pip,
             cluster: cluster.cluster,
             clusterPip: cluster.pip,
-            clusterVars: cluster.variants.length
+            clusterVars: cluster.variants.length,
+            geneFDR: tissueRes.fdr
           };
           DAPResultTable.push(obj);
         });
@@ -336,7 +345,8 @@ class SearchResult extends Component {
           <div className="text-center">
           <ClusterPlot height={400} width={800}  gene={this.props.dapResult.gene} clusters={this.props.dapResult.tissues[tissue].clusters}
             expSize={this.props.dapResult.tissues[tissue].expSize}
-            geneNull={this.props.dapResult.tissues[tissue].geneNull} />
+            geneNull={this.props.dapResult.tissues[tissue].geneNull}
+            fdr={this.props.dapResult.tissues[tissue].fdr} />
           </div>
           <br />
           </Expandable>
