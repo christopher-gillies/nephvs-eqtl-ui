@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 
 class Card extends Component {
+/*
 
+This object is a box with a title and soem choldren elements.
+It creates a bootstrap card
+
+*/
 
 
   render() {

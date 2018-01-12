@@ -5,6 +5,7 @@ import { SET_SEARCH_ERROR } from "./consts.js"
 import { SET_SUGGESTIONS } from "./consts.js"
 
 import { SET_TAB } from "./consts.js"
+import { SET_TAB_GENE_SUMMARY } from './consts.js'
 import { SET_FILTERS } from './consts';
 
 import { REQUEST_ALL_GENE_SYMBOLS } from "./consts.js"
@@ -40,6 +41,14 @@ export const setSuggestions = (suggestions, key) => ({
 
 export const setTab = (tab) => ({
   type: SET_TAB,
+  tab: tab
+})
+
+// We had to make another set tab method for a different page to prevent
+// the reduced from changing the state in both the SearchResult page and the
+// GeneSummary page.
+export const setTabGeneSummary = (tab) => ({
+  type: SET_TAB_GENE_SUMMARY,
   tab: tab
 })
 

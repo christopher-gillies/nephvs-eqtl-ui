@@ -20,7 +20,6 @@ const searchResult = (state = {}, action) => {
         ...state,
         filters: {
           maxPVal: action.maxPVal,
-          visible: action.visible
         }
       }
       break;

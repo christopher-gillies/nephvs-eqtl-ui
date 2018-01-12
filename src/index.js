@@ -34,6 +34,11 @@ let initState = {
       maxPVal: 0.05
     }
   },
+  geneSummary: {
+    currentTab: "glom",
+    glomResults: [],
+    tubResults: []
+  },
   gene: {
     symbols: []
   },

@@ -28,19 +28,19 @@ class Header extends Component {
     }
 
     return (
-  <nav className="navbar navbar-expand-lg navbar-light bg-light">
-  <div className="collapse navbar-collapse">
-    <Link className="navbar-brand" to="/"><img className="header_logo" alt="logo" src={logo}></img>{this.props.title}</Link>
-    <ul className="navbar-nav ml-auto">
-      {busy}
-      {search}
-      <li className="nav-item"><a className="nav-link" href="http://nephvs.org" target="_blank" rel="noopener noreferrer">NephVS</a></li>
-      <li className="nav-item"><Link className="nav-link" to="/about">About</Link></li>
-    </ul>
-  </div>
-</nav>
-
-    )
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="collapse navbar-collapse">
+        <Link className="navbar-brand" to="/"><img className="header_logo" alt="logo" src={logo}></img>{this.props.title}</Link>
+        <ul className="navbar-nav ml-auto">
+          {busy}
+          {search}
+          <li className="nav-item"><Link className="nav-link" to="/geneSummary">Gene Summary</Link></li>
+          <li className="nav-item"><Link className="nav-link" to="/about">About</Link></li>
+          <li className="nav-item"><a className="nav-link" href="http://nephvs.org" target="_blank" rel="noopener noreferrer">NephVS</a></li>
+        </ul>
+      </div>
+    </nav>
+  );
   }
 }
 
