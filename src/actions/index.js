@@ -17,6 +17,9 @@ import { RECEIVE_QUERY_RESULTS } from "./consts.js"
 import { REQUEST_VARIANT_DETAIL } from "./consts.js"
 import { RECEIVE_VARIANT_DETAIL } from "./consts.js"
 
+import { REQUEST_GENE_SUMMARY } from "./consts.js"
+import { RECEIVE_GENE_SUMMARY } from "./consts.js"
+import { SET_FILTERS_GENE_SUMMARY } from './consts';
 
 import QueryService from '../services/QueryService';
 let queryService = new QueryService();
@@ -175,3 +178,55 @@ export function fetchVariantDetail(entrezId, variantStr, tissue) {
       })
   }
 }
+
+
+
+/*
+
+*/
+
+
+function requestGeneSummary() {
+  return {
+    type: REQUEST_GENE_SUMMARY
+  }
+}
+
+function receiveGeneSummary(json) {
+  return {
+    type: RECEIVE_GENE_SUMMARY,
+    glomSummaries: json.glomSummaries,
+    tubSummaries: json.tubSummaries,
+  }
+}
+
+
+export function fetchGeneSummary(fdr = 0.01) {
+  return function(dispatch) {
+    //update state with request action
+    dispatch(requestGeneSummary());
+    let url = queryService.makeQuery("/query/geneSummary", {
+      fdr: fdr
+    });
+    return fetch(url)
+      .then(response => {
+        let jsonRes = response.json();
+        return jsonRes;
+      },
+        error => {
+          console.log('An error occured.', error)
+        })
+      .then(json => {
+        setTimeout(() => {
+          //update state with receive action
+          dispatch(receiveGeneSummary(json))
+        }, 0)
+      })
+  }
+}
+
+
+export const setFiltersGeneSummary = (filters) => ({
+  type: SET_FILTERS_GENE_SUMMARY,
+  fdr: filters.fdr
+})

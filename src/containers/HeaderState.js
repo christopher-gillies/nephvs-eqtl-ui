@@ -4,7 +4,8 @@ import { withRouter } from 'react-router-dom'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    isFetching: state.gene.isFetching || state.searchResult.isFetching,
+    isFetching: state.gene.isFetching || state.searchResult.isFetching ||
+    state.geneAndVariantDetail.isFetching || state.geneSummary.isFetching,
     pathname: ownProps.location.pathname,
   }
 }

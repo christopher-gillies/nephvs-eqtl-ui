@@ -312,8 +312,8 @@ class ClusterPlot extends Component {
               createParagraph("Description",genePlotData.description) +
               createParagraph("# of Clusters",genePlotData.numClusters) +
               createParagraph("Exp. # of eQTLs",genePlotData.expSize) +
-              createParagraph("Prob. of no eQTL",genePlotData.geneNull) +
-              createParagraph("FDR",genePlotData.geneFDR)
+              createParagraph("Prob. of no eQTL",genePlotData.geneNull.toPrecision(3)) +
+              createParagraph("FDR",genePlotData.geneFDR.toPrecision(3))
             )
       svg.call(geneToolTip);
 

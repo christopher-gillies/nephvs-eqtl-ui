@@ -36,8 +36,9 @@ let initState = {
   },
   geneSummary: {
     currentTab: "glom",
-    glomResults: [],
-    tubResults: []
+    glomSummaries: [],
+    tubSummaries: [],
+    fdr: 0.01
   },
   gene: {
     symbols: []
