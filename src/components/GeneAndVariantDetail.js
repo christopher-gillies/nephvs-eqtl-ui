@@ -73,14 +73,20 @@ class GeneAndVariantDetail extends Component {
     }
 
     let title = null;
-    if(variantDetail.variantDbSNPId && variantDetail.geneSymbol) {
-      title = (<span> Gene and Variant detail for <i> {variantDetail.geneSymbol} </i> and {variantDetail.variantDbSNPId} in {this.props.match.params.tissue}</span>);
-    } else if(variantDetail.geneSymbol) {
-      title = (<span> Gene and Variant detail for <i> {variantDetail.geneSymbol} </i> and {variantDetail.variantStr} in {this.props.match.params.tissue}</span>);
-    } else if(variantDetail.variantDbSNPId) {
-      title = (<span> Gene and Variant detail for <i> {variantDetail.geneEntrezId} </i> and {variantDetail.variantDbSNPId} in {this.props.match.params.tissue}</span>);
+    let tissueText = null;
+    if(this.props.match.params.tissue === "tub" || this.props.match.params.tissue === "tube") {
+      tissueText = "tubulointerstitium";
     } else {
-      title = (<span> Gene and Variant detail for <i> {variantDetail.geneEntrezId} </i> and {variantDetail.variantStr} in {this.props.match.params.tissue}</span>);
+      tissueText = "glomerulus";
+    }
+    if(variantDetail.variantDbSNPId && variantDetail.geneSymbol) {
+      title = (<span> Gene and variant detail for <i> {variantDetail.geneSymbol} </i> and {variantDetail.variantDbSNPId} in {tissueText}</span>);
+    } else if(variantDetail.geneSymbol) {
+      title = (<span> Gene and variant detail for <i> {variantDetail.geneSymbol} </i> and {variantDetail.variantStr} in {tissueText}</span>);
+    } else if(variantDetail.variantDbSNPId) {
+      title = (<span> Gene and variant detail for <i> {variantDetail.geneEntrezId} </i> and {variantDetail.variantDbSNPId} in {tissueText}</span>);
+    } else {
+      title = (<span> Gene and variant detail for <i> {variantDetail.geneEntrezId} </i> and {variantDetail.variantStr} in {tissueText}</span>);
     }
 
 
@@ -112,7 +118,7 @@ class GeneAndVariantDetail extends Component {
       { note }
       <div className="row justify-content-start">
         <Card title="Query">
-          <p><b>Tissue:</b> {this.props.match.params.tissue}</p>
+          <p><b>Tissue:</b> {tissueText}</p>
           <p><b>Entrez Id:</b> {this.props.match.params.gene}</p>
           <p><b>Variant Id:</b> {decodeURIComponent(this.props.match.params.variant)}</p>
         </Card>

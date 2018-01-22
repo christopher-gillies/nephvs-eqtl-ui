@@ -395,7 +395,7 @@ class ClusterPlot extends Component {
             <div ref={node => this.node = node}>
             </div>
             <form>
-            <div className="btn-group" data-toggle="buttons">
+            <div className="btn-group-toggle">
               <label className={ this.state.selectedView === "both" ? "btn btn-secondary active" : "btn btn-secondary" }>
                 <input type="radio" value="both" checked={this.state.selectedView === "both"}
                 onChange={this.handleViewChange}

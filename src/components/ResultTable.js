@@ -233,21 +233,25 @@ class ResultTable extends Component {
     console.log(numberOfPages)
     let pages = this.createPages(numberOfPages);
 
-    let pageSizeDropDown = (
-      <div className="dropdown float-right">
-      <button className="btn btn-light dropdown-toggle" onClick={ () => this.setState({showPageDropDown: !this.state.showPageDropDown}) }>
-        Page size: {this.state.pageSize}
-      </button>
-      <div className={ this.state.showPageDropDown ? "dropdown-menu show" : "dropdown-menu" }>
-        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 5, showPageDropDown: false, currentPage: 1})}>5</a>
-        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 10, showPageDropDown: false, currentPage: 1})}>10</a>
-        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 20, showPageDropDown: false, currentPage: 1})}>20</a>
-        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 50, showPageDropDown: false, currentPage: 1})}>50</a>
-        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 100, showPageDropDown: false, currentPage: 1})}>100</a>
-        <a className="dropdown-item" onClick={ () => this.setState({pageSize: 500, showPageDropDown: false, currentPage: 1})}>500</a>
+    let pageSizeDropDown = null;
+
+    if(numberOfPages > 1) {
+      pageSizeDropDown = (
+        <div className="dropdown float-right">
+        <button className="btn btn-light dropdown-toggle" onClick={ () => this.setState({showPageDropDown: !this.state.showPageDropDown}) }>
+          Page size: {this.state.pageSize}
+        </button>
+        <div className={ this.state.showPageDropDown ? "dropdown-menu show" : "dropdown-menu" }>
+          <a className="dropdown-item" onClick={ () => this.setState({pageSize: 5, showPageDropDown: false, currentPage: 1})}>5</a>
+          <a className="dropdown-item" onClick={ () => this.setState({pageSize: 10, showPageDropDown: false, currentPage: 1})}>10</a>
+          <a className="dropdown-item" onClick={ () => this.setState({pageSize: 20, showPageDropDown: false, currentPage: 1})}>20</a>
+          <a className="dropdown-item" onClick={ () => this.setState({pageSize: 50, showPageDropDown: false, currentPage: 1})}>50</a>
+          <a className="dropdown-item" onClick={ () => this.setState({pageSize: 100, showPageDropDown: false, currentPage: 1})}>100</a>
+          <a className="dropdown-item" onClick={ () => this.setState({pageSize: 500, showPageDropDown: false, currentPage: 1})}>500</a>
+        </div>
       </div>
-    </div>
-    );
+      );
+    }
 
     let saveButton = (
           <div className="float-left">
@@ -261,7 +265,6 @@ class ResultTable extends Component {
     }
     return(
       <div>
-      <span className="float-right">{summaryStr}</span>
       <table className="table table-striped text-center smaller-font">
         <thead>
           <tr>
@@ -273,6 +276,8 @@ class ResultTable extends Component {
         </tbody>
       </table>
 
+      <span className="float-right">{summaryStr}</span>
+      <br />
       {saveButton}
 
       {pageSizeDropDown}

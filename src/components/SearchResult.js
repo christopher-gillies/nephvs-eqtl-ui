@@ -4,6 +4,7 @@ import ResultTable from './ResultTable'
 import { Link } from 'react-router-dom'
 import ClusterPlot from './ClusterPlot'
 import Expandable from './Expandable'
+//import ExpandableLabel from './ExpandableLabel'
 
 class SearchResult extends Component {
 
@@ -57,6 +58,12 @@ class SearchResult extends Component {
   }
 
   render() {
+    //variable to indicate if this is the X chromosome
+    let tmpIsX = false;
+    if(this.props.glomResults && this.props.glomResults.length > 0) {
+      tmpIsX = (this.props.glomResults[0].chrom === "X");
+    }
+    const isX = tmpIsX;
 
     let chrPosSort = (a,b) => {
       let chrA = a['chrom'];
@@ -147,19 +154,19 @@ class SearchResult extends Component {
       {
         key: 'overallAf',
         name: "Alt. AF",
-        formatter: (rowData) => rowData.overallAf.toPrecision(3),
-        csvFormatter: (rowData) => rowData.overallAf,
+        formatter: (rowData) => !isX ? rowData.overallAf.toPrecision(2) : null,
+        csvFormatter: (rowData) => !isX ? rowData.overallAf : null,
       },
       {
         key: 'beta',
         name: "Beta",
-        formatter: (rowData) => rowData.beta.toPrecision(3),
+        formatter: (rowData) => rowData.beta.toPrecision(2),
         csvFormatter: (rowData) => rowData.beta,
       },
       {
         key: 'tStat',
         name: "t-statistic",
-        formatter: (rowData) => rowData.tStat.toPrecision(3),
+        formatter: (rowData) => rowData.tStat.toPrecision(2),
         csvFormatter: (rowData) => rowData.tStat,
       },
       {
@@ -167,9 +174,9 @@ class SearchResult extends Component {
         name: "P-value",
         formatter: (rowData) => {
           if(rowData.pVal < 0.001) {
-            return rowData.pVal.toExponential(3)
+            return rowData.pVal.toExponential(2)
           } else {
-            return rowData.pVal.toPrecision(3)
+            return rowData.pVal.toPrecision(2)
           }
         },
         csvFormatter: (rowData) => rowData.pVal,
@@ -267,13 +274,13 @@ class SearchResult extends Component {
       {
         key: 'af',
         name: "Alt. AF",
-        formatter: (rowData) => rowData.af.toPrecision(3),
+        formatter: (rowData) => rowData.af.toPrecision(2),
         csvFormatter: (rowData) => rowData.af,
       },
       {
         key: 'variantPip',
         name: "Variant PIP",
-        formatter: (rowData) => rowData.variantPip,
+        formatter: (rowData) => rowData.variantPip.toPrecision(2),
         csvFormatter: (rowData) => rowData.variantPip,
       },
       {
@@ -285,7 +292,7 @@ class SearchResult extends Component {
       {
         key: 'clusterPip',
         name: "Cluster PIP",
-        formatter: (rowData) => rowData.clusterPip,
+        formatter: (rowData) => rowData.clusterPip.toPrecision(2),
         csvFormatter: (rowData) => rowData.clusterPip,
       },
       {
@@ -293,12 +300,6 @@ class SearchResult extends Component {
         name: "# of variants in cluster",
         formatter: (rowData) => rowData.clusterVars,
         csvFormatter: (rowData) => rowData.clusterVars,
-      },
-      {
-        key: 'fdr',
-        name: "Gene FDR",
-        formatter: (rowData) => rowData.geneFDR.toPrecision(3),
-        csvFormatter: (rowData) => rowData.geneFDR.toPrecision(3),
       }
     ];
 
@@ -335,8 +336,7 @@ class SearchResult extends Component {
               variantPip: variant.pip,
               cluster: cluster.cluster,
               clusterPip: cluster.pip,
-              clusterVars: cluster.variants.length,
-              geneFDR: tissueRes.fdr
+              clusterVars: cluster.variants.length
             };
             DAPResultTable.push(obj);
           });
@@ -354,8 +354,32 @@ class SearchResult extends Component {
             <br />
             </Expandable>
             <Expandable title="DAP Fine Mapping Table:">
+
+              <p><b>Summary of DAP gene-level results</b></p>
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td>Gene-level FDR: </td>
+                    <td>{this.props.dapResult.tissues[tissue].fdr.toPrecision(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Probability of no eQTL: </td>
+                    <td>{this.props.dapResult.tissues[tissue].geneNull.toPrecision(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Expected # of eQTLs: </td>
+                    <td>{this.props.dapResult.tissues[tissue].expSize.toPrecision(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Number of clusters: </td>
+                    <td>{this.props.dapResult.tissues[tissue].clusters.length}</td>
+                  </tr>
+                </tbody>
+              </table>
+
               <ResultTable data={ DAPResultTable }
                 columns={ DAPTableColumns } csvFilename={DAPCsvFilename} defaultSortCol="cluster"/>
+                <br />
             </Expandable>
           </div>
         );
@@ -367,10 +391,8 @@ class SearchResult extends Component {
 
     console.log(this.props.filters);
 
-    let isX = false;
-    if(this.props.glomResults && this.props.glomResults.length > 0) {
-      isX = (this.props.glomResults[0].chrom === "X");
-    }
+
+
 
     let note = null;
     if(isX) {
@@ -388,7 +410,7 @@ class SearchResult extends Component {
         <div className="border">
           <ul className="nav nav-tabs">
             <li onClick={() => this.onTabClick('glom')} className="nav-item"><a className={ this.props.currentTab === "glom" ? "nav-link active" : "nav-link"}>Glomerulus</a></li>
-            <li onClick={() => this.onTabClick('tub')} className="nav-item"><a className={ this.props.currentTab === "tub" ? "nav-link active" : "nav-link"}>Tubulointerstitial</a></li>
+            <li onClick={() => this.onTabClick('tub')} className="nav-item"><a className={ this.props.currentTab === "tub" ? "nav-link active" : "nav-link"}>Tubulointerstitium</a></li>
           </ul>
           <br />
 
