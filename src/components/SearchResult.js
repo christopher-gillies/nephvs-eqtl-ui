@@ -317,45 +317,52 @@ class SearchResult extends Component {
 
       //create result table for DAPResultTable
       let DAPResultTable = [];
-      let tissueRes = this.props.dapResult.tissues[tissue];
-      tissueRes.clusters.forEach( (cluster) => {
-        cluster.variants.forEach( (variant ) => {
-          let obj = {
-            entrezId: this.props.dapResult.gene.entrezId,
-            symbol: this.props.dapResult.gene.symbol,
-            chrom: variant.chrom,
-            pos: variant.pos,
-            ref: variant.ref,
-            alt: variant.alt,
-            dbSNPId: variant.dbSNPId,
-            af: variant.af,
-            variantPip: variant.pip,
-            cluster: cluster.cluster,
-            clusterPip: cluster.pip,
-            clusterVars: cluster.variants.length,
-            geneFDR: tissueRes.fdr
-          };
-          DAPResultTable.push(obj);
+      let tissueRes = null;
+      //Only do this if the dapResult is available
+      if(this.props.dapResult) {
+        tissueRes = this.props.dapResult.tissues[tissue];
+        tissueRes.clusters.forEach( (cluster) => {
+          cluster.variants.forEach( (variant ) => {
+            let obj = {
+              entrezId: this.props.dapResult.gene.entrezId,
+              symbol: this.props.dapResult.gene.symbol,
+              chrom: variant.chrom,
+              pos: variant.pos,
+              ref: variant.ref,
+              alt: variant.alt,
+              dbSNPId: variant.dbSNPId,
+              af: variant.af,
+              variantPip: variant.pip,
+              cluster: cluster.cluster,
+              clusterPip: cluster.pip,
+              clusterVars: cluster.variants.length,
+              geneFDR: tissueRes.fdr
+            };
+            DAPResultTable.push(obj);
+          });
         });
-      });
 
-      DAPFineMapping = (
-        <div>
-          <Expandable title="DAP Fine Mapping Plot:">
-          <div className="text-center">
-          <ClusterPlot height={400} width={800}  gene={this.props.dapResult.gene} clusters={this.props.dapResult.tissues[tissue].clusters}
-            expSize={this.props.dapResult.tissues[tissue].expSize}
-            geneNull={this.props.dapResult.tissues[tissue].geneNull}
-            fdr={this.props.dapResult.tissues[tissue].fdr} />
+        DAPFineMapping = (
+          <div>
+            <Expandable title="DAP Fine Mapping Plot:">
+            <div className="text-center">
+            <ClusterPlot height={400} width={800}  gene={this.props.dapResult.gene} clusters={this.props.dapResult.tissues[tissue].clusters}
+              expSize={this.props.dapResult.tissues[tissue].expSize}
+              geneNull={this.props.dapResult.tissues[tissue].geneNull}
+              fdr={this.props.dapResult.tissues[tissue].fdr} />
+            </div>
+            <br />
+            </Expandable>
+            <Expandable title="DAP Fine Mapping Table:">
+              <ResultTable data={ DAPResultTable }
+                columns={ DAPTableColumns } csvFilename={DAPCsvFilename} defaultSortCol="cluster"/>
+            </Expandable>
           </div>
-          <br />
-          </Expandable>
-          <Expandable title="DAP Fine Mapping Table:">
-            <ResultTable data={ DAPResultTable }
-              columns={ DAPTableColumns } csvFilename={DAPCsvFilename} defaultSortCol="cluster"/>
-          </Expandable>
-        </div>
-      );
+        );
+      }
+
+
+
     }
 
     console.log(this.props.filters);
