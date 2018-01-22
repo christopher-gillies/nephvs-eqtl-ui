@@ -12,7 +12,7 @@ class About extends Component {
 
       <Card title="Cohort information" size="col-lg">
         <p>Please visit the NEPTUNE cohort <a href="http://www.neptune-study.org/">website</a></p>
-        <b>Relevant Publications: </b> <a href="https://www.ncbi.nlm.nih.gov/pubmed/23325076">here</a> and <a href="http://abstracts.ashg.org/cgi-bin/2013/ashg13s.pl?author=sampson&sort=ptimes&sbutton=Detail&absno=130121980&sid=603412">here</a>
+        <b>Relevant Publication: </b> <a href="https://www.ncbi.nlm.nih.gov/pubmed/23325076">here</a> 
         <br />
         <h3>NEPTUNE patient characteristics for subjects in eQTL</h3>
         <br />

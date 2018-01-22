@@ -86,6 +86,20 @@ class GeneAndVariantDetail extends Component {
 
     let boxplotFilename = variantDetail.geneEntrezId + "_" + variantDetail.variantStr + "_" + this.props.match.params.tissue + ".svg";
 
+    let isX = false;
+    if(variantDetail) {
+      isX = (variantDetail.geneChrom === "X");
+    }
+
+    let note = null;
+    if(isX) {
+      note=(<small>*Please note the the allele frequency is computed as 2 times number of homozygous alternative subjects +
+            number of heterozygotes divided by 2 times the number of subjects. So for the X chromosome, this allele frequency will be incorrect.
+        </small>
+      );
+    }
+
+
     return(
       <div className="container-fluid">
       <div className="text-center"><h3>{title}</h3></div>
@@ -94,6 +108,8 @@ class GeneAndVariantDetail extends Component {
       <BoxPlot data={dataForBoxPlot} filename={boxplotFilename}
         groupOrder={allelesStr} width="650" height="650" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic} boxWidth="150"/>
       </div>
+
+      { note }
       <div className="row justify-content-start">
         <Card title="Query">
           <p><b>Tissue:</b> {this.props.match.params.tissue}</p>

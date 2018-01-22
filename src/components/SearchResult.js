@@ -360,6 +360,19 @@ class SearchResult extends Component {
 
     console.log(this.props.filters);
 
+    let isX = false;
+    if(this.props.glomResults && this.props.glomResults.length > 0) {
+      isX = (this.props.glomResults[0].chrom === "X");
+    }
+
+    let note = null;
+    if(isX) {
+      note=(<small>*Please note the the allele frequency is computed as 2 times number of homozygous alternative subjects +
+            number of heterozygotes divided by 2 times the number of subjects. So for the X chromosome, this allele frequency will be incorrect.
+        </small>
+      );
+    }
+
     return(
       <div>
         <h1>Result for: <span className={this.props.queryType === "GeneSymbol" ? "font-italic" : ""}>
@@ -380,7 +393,9 @@ class SearchResult extends Component {
 
           {DAPFineMapping}
 
+
           <Expandable title="Matrix eQTL Results:" startExpanded={true}>
+            { note }
             <ResultTable data={ this.props.currentTab === "glom" ?  this.props.glomResults : this.props.tubResults}
               columns={ matrixEQTLColumns } csvFilename={matrixEQLTCsvFilename} defaultSortCol="pVal" />
           </Expandable>
