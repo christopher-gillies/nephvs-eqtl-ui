@@ -156,7 +156,7 @@ class SearchForm extends Component {
         type="submit" className="btn btn-primary">Search</button>);
       heading = null;
       formStyle="form-inline my-2 my-lg-0";
-      inputProps.placeholder = "Enter query"
+      inputProps.placeholder = "Gene, rsid, chr:pos"
 
       if(this.props.errorMessage !== "") {
         error = (

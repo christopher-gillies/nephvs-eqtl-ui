@@ -65,6 +65,14 @@ class SearchResult extends Component {
     }
     const isX = tmpIsX;
 
+    //variable to label the top of screen better
+    let currentTabStr = "";
+    if(this.props.currentTab === "glom") {
+      currentTabStr = "Glomerulus";
+    } else {
+      currentTabStr = "Tubulointerstitium"
+    }
+
     let chrPosSort = (a,b) => {
       let chrA = a['chrom'];
       let posA = a['pos'];
@@ -192,7 +200,7 @@ class SearchResult extends Component {
             tissue = "glom";
           }
           let linkTo = "/detail/tissue/" + tissue + "/gene/" + rowData.entrezId + "/variant/" + encodeURIComponent(rowData.variantStr);
-          return (<Link to={linkTo}>View Data</Link>)
+          return (<Link to={linkTo}>View box plot and data</Link>)
         },
         sortable: false,
         excludeCsv: true
@@ -208,7 +216,7 @@ class SearchResult extends Component {
             <div className="form-group">
               <label>Maximum p-value for variants to retrieve from server:</label>
               <input onChange={this.onPValChange}
-                className="form-control" type="number" min="0" max="1" placeholder="Maximum p-value to retrieve from server" step="0.01" value={this.props.filters.maxPVal}/>
+                className="form-control" type="number" min="0" max="1" step="any" placeholder="Maximum p-value to retrieve from server" value={this.props.filters.maxPVal}/>
             </div>
             <input type="submit" className="btn btn-primary" value="Update" />
           </form>
@@ -404,15 +412,19 @@ class SearchResult extends Component {
 
     return(
       <div>
-        <h1>Result for: <span className={this.props.queryType === "GeneSymbol" ? "font-italic" : ""}>
-        {this.props.queryType === "GeneSymbol" ? this.props.query.toUpperCase() : this.props.query}</span></h1>
 
         <div className="border">
           <ul className="nav nav-tabs">
             <li onClick={() => this.onTabClick('glom')} className="nav-item"><a className={ this.props.currentTab === "glom" ? "nav-link active" : "nav-link"}>Glomerulus</a></li>
             <li onClick={() => this.onTabClick('tub')} className="nav-item"><a className={ this.props.currentTab === "tub" ? "nav-link active" : "nav-link"}>Tubulointerstitium</a></li>
           </ul>
+
           <br />
+
+          <h2>Results for <span className={this.props.queryType === "GeneSymbol" ? "font-italic" : ""}>
+          {this.props.queryType === "GeneSymbol" ? this.props.query.toUpperCase() : this.props.query} </span> in { currentTabStr } </h2>
+
+
 
           <Expandable title="Filters:">
             { filters }

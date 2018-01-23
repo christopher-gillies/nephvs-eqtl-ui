@@ -40,13 +40,22 @@ class GeneSummary extends Component {
     }
 
     render() {
+
+      //variable to label the top of screen better
+      let currentTabStr = "";
+      if(this.props.currentTab === "glom") {
+        currentTabStr = "Glomerulus";
+      } else {
+        currentTabStr = "Tubulointerstitium"
+      }
+
       let filters = (
           <div className="card-body">
             <form onSubmit={this.onUpdateClick}>
               <div className="form-group">
                 <label>Maximum FDR for variants to retrieve from server:</label>
                 <input onChange={this.onFDRChange}
-                  className="form-control" type="number" min="0" max="1" placeholder="Maximum FDR to retrieve from server" step="0.01" value={this.props.fdr}/>
+                  className="form-control" type="number" min="0" max="1" placeholder="Maximum FDR to retrieve from server" step="any" value={this.props.fdr}/>
               </div>
               <input type="submit" className="btn btn-primary" value="Update" />
             </form>
@@ -103,14 +112,15 @@ class GeneSummary extends Component {
 
       return (
         <div>
-          <h1>Gene Summary where FDR &le; {this.state.fdrView}</h1>
-
           <div className="border">
             <ul className="nav nav-tabs">
               <li onClick={() => this.onTabClick('glom')} className="nav-item"><a className={ this.props.currentTab === "glom" ? "nav-link active" : "nav-link"}>Glomerulus</a></li>
               <li onClick={() => this.onTabClick('tub')} className="nav-item"><a className={ this.props.currentTab === "tub" ? "nav-link active" : "nav-link"}>Tubulointerstitium</a></li>
             </ul>
             <br />
+
+            <h2>eQTL gene-level summary where FDR &le; {this.state.fdrView} in { currentTabStr }</h2>
+
 
             <Expandable title="Filters:">
               { filters }
