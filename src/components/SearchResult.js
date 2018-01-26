@@ -352,7 +352,7 @@ class SearchResult extends Component {
 
         DAPFineMapping = (
           <div>
-            <Expandable title="DAP Fine Mapping Plot:">
+            <Expandable title="DAP Fine Mapping Plot:" helpLink="/help#DAP">
             <div className="text-center">
             <ClusterPlot height={400} width={800}  gene={this.props.dapResult.gene} clusters={this.props.dapResult.tissues[tissue].clusters}
               expSize={this.props.dapResult.tissues[tissue].expSize}
@@ -361,7 +361,7 @@ class SearchResult extends Component {
             </div>
             <br />
             </Expandable>
-            <Expandable title="DAP Fine Mapping Table:">
+            <Expandable title="DAP Fine Mapping Table:" helpLink="/help#DAP">
 
               <p><b>Summary of DAP gene-level results</b></p>
               <table className="table">
@@ -435,7 +435,7 @@ class SearchResult extends Component {
           {DAPFineMapping}
 
 
-          <Expandable title="Matrix eQTL Results:" startExpanded={true}>
+          <Expandable title="Matrix eQTL Results:" startExpanded={true} helpLink="/help#MatrixEQTL">
             { note }
             <ResultTable data={ this.props.currentTab === "glom" ?  this.props.glomResults : this.props.tubResults}
               columns={ matrixEQTLColumns } csvFilename={matrixEQLTCsvFilename} defaultSortCol="pVal" />

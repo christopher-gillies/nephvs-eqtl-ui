@@ -127,7 +127,7 @@ class GeneSummary extends Component {
               <br />
             </Expandable>
 
-            <Expandable title="Gene Summary" startExpanded={true}>
+            <Expandable title="eQTL Gene-Level Summary" startExpanded={true} helpLink="/help#DAP">
               <ResultTable data={ this.props.currentTab === "glom" ?  this.props.glomSummaries : this.props.tubSummaries}
                 columns={ geneSummaryCols } csvFilename={geneSummaryCsvFilename} defaultSortCol="fdr" />
             </Expandable>
