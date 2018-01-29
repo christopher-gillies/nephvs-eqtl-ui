@@ -66,10 +66,10 @@ class GeneAndVariantDetail extends Component {
     let ylabItalic = "";
 
     if(variantDetail.geneSymbol) {
-      ylab = "Rank normalized adjusted expression for ";
+      ylab = "Rank normalized, adjusted gene expression for ";
       ylabItalic = variantDetail.geneSymbol;
     } else {
-      ylab = "Rank normalized adjusted expression for " + variantDetail.geneEntrezId;
+      ylab = "Rank normalized adjusted, gene expression for " + variantDetail.geneEntrezId;
     }
 
     let title = null;
@@ -99,12 +99,24 @@ class GeneAndVariantDetail extends Component {
 
     let note = null;
     if(isX) {
-      note=(<small>*Please note the the allele frequency is computed as 2 times number of homozygous alternative subjects +
-            number of heterozygotes divided by 2 times the number of subjects. So for the X chromosome, this allele frequency will be incorrect.
+      note=(<small>*Please note that the the allele frequency is computed as 2 times number of homozygous alternative subjects +
+            number of heterozygotes divided by 2 times the number of subjects. On the X-chromosome, males with one allele were coded as 2. Therefore, for the X chromosome, this allele frequency is hidden because it is incorrect.
         </small>
       );
     }
 
+    let neptuneAf = null;
+    if(!isX) {
+      neptuneAf = (
+        <Card title="NEPTUNE Allele Frequencies">
+          <p><b>Overall Alt. AF:</b> {this.afFormatter(variantDetail.overallAf)} </p>
+          <p><b>AFR Alt. AF:</b> {this.afFormatter(variantDetail.afrAf)} </p>
+          <p><b>AMR Alt. AF:</b> {this.afFormatter(variantDetail.amrAf)} </p>
+          <p><b>ASN Alt. AF:</b> {this.afFormatter(variantDetail.asnAf)} </p>
+          <p><b>EUR Alt. AF:</b> {this.afFormatter(variantDetail.eurAf)} </p>
+        </Card>
+      );
+    }
 
     return(
       <div className="container-fluid">
@@ -115,7 +127,6 @@ class GeneAndVariantDetail extends Component {
         groupOrder={allelesStr} width="650" height="650" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic} boxWidth="150"/>
       </div>
 
-      { note }
       <div className="row justify-content-start">
         <Card title="Query">
           <p><b>Tissue:</b> {tissueText}</p>
@@ -140,18 +151,12 @@ class GeneAndVariantDetail extends Component {
           <p><b>Reference:</b> {variantDetail.variantRef} </p>
           <p><b>Alternative:</b> {variantDetail.variantAlt}</p>
           <p><b>dbSNP:</b> {variantDetail.variantDbSNPId} </p>
-          <p><b>Number of reference homozygotes:</b> {allelesStr[0]} = {variantDetail.homRef} </p>
+          <p><b>Number of reference {!isX ? "homozygotes" : "homozygotes/hemizygotes"}:</b> {allelesStr[0]} = {variantDetail.homRef} </p>
           <p><b>Number of heterozygotes:</b> {allelesStr[1]} = {variantDetail.het} </p>
-          <p><b>Number of alternative homozygotes:</b> {allelesStr[2]} = {variantDetail.homAlt} </p>
+          <p><b>Number of alternative {!isX ? "homozygotes" : "homozygotes/hemizygotes"} :</b> {allelesStr[2]} = {variantDetail.homAlt} </p>
         </Card>
 
-        <Card title="NEPTUNE Allele Frequencies">
-          <p><b>Overall Alt. AF:</b> {this.afFormatter(variantDetail.overallAf)} </p>
-          <p><b>AFR Alt. AF:</b> {this.afFormatter(variantDetail.afrAf)} </p>
-          <p><b>AMR Alt. AF:</b> {this.afFormatter(variantDetail.amrAf)} </p>
-          <p><b>ASN Alt. AF:</b> {this.afFormatter(variantDetail.asnAf)} </p>
-          <p><b>EUR Alt. AF:</b> {this.afFormatter(variantDetail.eurAf)} </p>
-        </Card>
+        { neptuneAf }
 
         <Card title="1000G Phase 3 Allele Frequencies">
           <p><b>Overall Alt. AF:</b> {this.afFormatter(variantDetail._1kgOverallAf)} </p>
@@ -168,6 +173,7 @@ class GeneAndVariantDetail extends Component {
           <p><b>P-value: </b> {pValFormat}</p>
         </Card>
       </div>
+      { note }
       </div>
     )
   }

@@ -415,6 +415,7 @@ class ClusterPlot extends Component {
             </form>
             <div className="text-right">
               <button className="btn btn-light fa fa-download" onClick={ () => this.saveImage() }>
+               &nbsp; Download Plot
               </button>
             </div>
           </div>

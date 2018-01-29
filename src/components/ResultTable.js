@@ -256,6 +256,7 @@ class ResultTable extends Component {
     let saveButton = (
           <div className="float-left">
             <button className="btn btn-light fa fa-download" onClick={ () => this.saveTable() }>
+            &nbsp; Download Table
             </button>
           </div> );
 

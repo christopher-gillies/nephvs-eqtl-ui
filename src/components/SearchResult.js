@@ -282,8 +282,8 @@ class SearchResult extends Component {
       {
         key: 'af',
         name: "Alt. AF",
-        formatter: (rowData) => rowData.af.toPrecision(2),
-        csvFormatter: (rowData) => rowData.af,
+        formatter: (rowData) => !isX ? rowData.af.toPrecision(2) : null,
+        csvFormatter: (rowData) => !isX ? rowData.af : null,
       },
       {
         key: 'variantPip',
@@ -404,8 +404,8 @@ class SearchResult extends Component {
 
     let note = null;
     if(isX) {
-      note=(<small>*Please note the the allele frequency is computed as 2 times number of homozygous alternative subjects +
-            number of heterozygotes divided by 2 times the number of subjects. So for the X chromosome, this allele frequency will be incorrect.
+      note=(<small>*Please note that the the allele frequency is computed as 2 times the number of homozygous alternative subjects +
+            the number of heterozygotes divided by 2 times the number of subjects. On the X-chromosome, males with one allele were coded as 2. Therefore, for the X chromosome, this allele frequency is hidden because it is incorrect.
         </small>
       );
     }
@@ -436,11 +436,11 @@ class SearchResult extends Component {
 
 
           <Expandable title="Matrix eQTL Results:" startExpanded={true} helpLink="/help#MatrixEQTL">
-            { note }
             <ResultTable data={ this.props.currentTab === "glom" ?  this.props.glomResults : this.props.tubResults}
               columns={ matrixEQTLColumns } csvFilename={matrixEQLTCsvFilename} defaultSortCol="pVal" />
           </Expandable>
 
+          { note }
         </div>
         <br />
       </div>
