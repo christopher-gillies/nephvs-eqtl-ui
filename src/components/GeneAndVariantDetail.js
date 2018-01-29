@@ -99,8 +99,8 @@ class GeneAndVariantDetail extends Component {
 
     let note = null;
     if(isX) {
-      note=(<small>*Please note that the the allele frequency is computed as 2 times number of homozygous alternative subjects +
-            number of heterozygotes divided by 2 times the number of subjects. On the X-chromosome, males with one allele were coded as 2. Therefore, for the X chromosome, this allele frequency is hidden because it is incorrect.
+      note=(<small>*Please note that the the allele frequency is computed as 2 times the number of homozygous alternative subjects +
+            the number of heterozygotes divided by 2 times the number of subjects. On the X-chromosome, males with one allele were coded as 2. Therefore, for the X chromosome, this allele frequency is hidden because it is incorrect.
         </small>
       );
     }
