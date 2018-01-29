@@ -276,10 +276,13 @@ class About extends Component {
         <p> <b>Fine Mapping:</b> <a onClick={this.handleLinkClick} href="https://projecteuclid.org/euclid.aoas/1475069621">TORUS</a> and <a onClick={this.handleLinkClick} href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4908152/"> DAP </a> </p>
       </Card>
 
-      <Card title="Download Full matrix eQTL results" size="col-lg">
-        <p>You can download the tubulointerstitial Matrix eQTL results <a href="_blank">here.</a></p>
-        <p>You can download the glomerulus Matrix eQTL results <a href="_blank">here.</a></p>
+      { /*
+      <Card title="Download Full matrix eQTL results (Coming soon...)" size="col-lg">
+        <p>You can download the tubulointerstitial Matrix eQTL results <a onClick={this.handleLinkClick} href="_blank">here.</a></p>
+        <p>You can download the glomerulus Matrix eQTL results <a onClick={this.handleLinkClick} href="_blank">here.</a></p>
       </Card>
+      */
+      }
 
       <Card title="Lab website" size="col-lg">
         Please visit our lab <a onClick={this.handleLinkClick} href="https://sites.google.com/a/umich.edu/sampson_lab/">here.</a>
