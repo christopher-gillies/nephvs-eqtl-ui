@@ -100,7 +100,7 @@ class Help extends Component {
             P-value
             </td>
             <td>
-              If the null hypothesis were true (Beta = 0), then the p-value corresponds to the probability of obtaining the t-statistic that we observed or a one more extreme one.
+              If the null hypothesis were true (Beta = 0), then the p-value corresponds to the probability of obtaining the t-statistic that we observed or a more extreme one.
             </td>
           </tr>
           </tbody>
