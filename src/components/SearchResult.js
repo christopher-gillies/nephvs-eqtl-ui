@@ -24,8 +24,9 @@ class SearchResult extends Component {
     }
   }
 
-  onTabClick = (tab) => {
-    this.props.handleSetTab(tab)
+  onTabClick = (tab,e) => {
+    this.props.handleSetTab(tab,e)
+    e.preventDefault()
   }
 
   onShowFilters = () => {
@@ -413,10 +414,13 @@ class SearchResult extends Component {
     return(
       <div>
 
-        <div className="border">
-          <ul className="nav nav-tabs">
-            <li onClick={() => this.onTabClick('glom')} className="nav-item"><a className={ this.props.currentTab === "glom" ? "nav-link active" : "nav-link"}>Glomerulus</a></li>
-            <li onClick={() => this.onTabClick('tub')} className="nav-item"><a className={ this.props.currentTab === "tub" ? "nav-link active" : "nav-link"}>Tubulointerstitium</a></li>
+        <br />
+        {/* remove border 2-1-2018 */}
+        <div>
+        {/* change to pills 2-1-2018 */}
+          <ul className="nav nav-pills">
+            <li className="nav-item"><a onClick={(e) => this.onTabClick('glom',e)} className={ this.props.currentTab === "glom" ? "nav-link active" : "nav-link"} href="">Glomerulus</a></li>
+            <li className="nav-item"><a onClick={(e) => this.onTabClick('tub',e)} className={ this.props.currentTab === "tub" ? "nav-link active" : "nav-link"} href="">Tubulointerstitium</a></li>
           </ul>
 
           <br />

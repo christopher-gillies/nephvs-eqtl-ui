@@ -3,6 +3,7 @@ import Autosuggest from 'react-autosuggest'
 import './SearchForm.css'
 import PropTypes from 'prop-types'
 import QueryService from '../services/QueryService'
+import InfoBox from './InfoBox'
 
 const getSuggestionValue = suggestion => suggestion;
 const maxSuggestionLength = 5;
@@ -125,8 +126,8 @@ class SearchForm extends Component {
     };
 
     let heading = (
-      <div className="text-center">
-            <h3>Welcome to NephVS eQTL Browser!</h3>
+      <div className="text-center m-3">
+        <h3>Welcome to NephVS eQTL Browser!</h3>
       </div>
     );
 
@@ -168,6 +169,12 @@ class SearchForm extends Component {
 
     }
 
+    //add infobox
+    let infobox = null;
+    if(!this.props.header) {
+      infobox = <InfoBox />
+    }
+
 
 
     return(
@@ -185,6 +192,7 @@ class SearchForm extends Component {
         />
         {submit}
       </form>
+       { infobox }
       </div>
     )
   }

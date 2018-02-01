@@ -255,8 +255,8 @@ class ResultTable extends Component {
 
     let saveButton = (
           <div className="float-left">
-            <button className="btn btn-light fa fa-download" onClick={ () => this.saveTable() }>
-            &nbsp; Download Table
+            <button className="btn btn-light" onClick={ () => this.saveTable() }>
+            Download Table &nbsp;  <span className="fa fa-download"/>
             </button>
           </div> );
 
@@ -266,7 +266,7 @@ class ResultTable extends Component {
     }
     return(
       <div>
-      <table className="table table-striped text-center smaller-font">
+      <table className="table table-striped smaller-font">
         <thead>
           <tr>
             { headerCols }
@@ -278,6 +278,7 @@ class ResultTable extends Component {
       </table>
 
       <span className="float-right">{summaryStr}</span>
+
       <br />
       {saveButton}
 

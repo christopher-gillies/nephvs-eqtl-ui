@@ -29,7 +29,11 @@ class Expandable extends Component {
 
     let children = null;
     if(this.state.expand) {
-      children = this.props.children;
+      children = (
+        <div className="p-1">
+          {this.props.children}
+        </div>
+      );
     }
 
     let helpLinkText = this.props.helpLink;
@@ -43,7 +47,6 @@ class Expandable extends Component {
           <h5 className="d-inline card-title">{this.props.title} {helpLink}</h5>
           <button className="btn btn-outline-primary btn-sm float-right" onClick={this.onClick}>{this.state.expand === true ? "-" : "+"}</button>
         </div>
-
         {children}
       </div>
     );

@@ -385,8 +385,8 @@ class BoxPlot extends Component {
             <div ref={node => this.node = node}>
             </div>
             <div className="text-right">
-              <button className="btn btn-light fa fa-download" onClick={ () => this.saveImage() }>
-              &nbsp; Download Plot
+              <button className="btn btn-light" onClick={ () => this.saveImage() }>
+                Download Table &nbsp;  <span className="fa fa-download"/>
               </button>
             </div>
           </div>
