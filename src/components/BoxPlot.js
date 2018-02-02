@@ -96,8 +96,8 @@ class BoxPlot extends Component {
      }
 
      return {
-       "boxPlotData": boxPlotData,
-       "groups": groups,
+       "groupInfos": boxPlotData,
+       "groupsKeys": groups,
        "minY": minY,
        "maxY": maxY,
      }
@@ -105,10 +105,10 @@ class BoxPlot extends Component {
 
 
   render() {
-        const { boxPlotData, groups, minY, maxY  } = this.formatDataForD3();
+        const { groupInfos, groupsKeys, minY, maxY  } = this.formatDataForD3();
         return (
           <div>
-            <BoxPlotCore boxPlotData={boxPlotData} groups={groups} minY={minY} maxY={maxY} boxWidth={this.props.boxWidth} width={this.props.width} height={this.props.height} />
+            <BoxPlotCore groupInfos={groupInfos} groupKeys={groupsKeys} minY={minY} maxY={maxY} boxWidth={this.props.boxWidth} width={this.props.width} height={this.props.height} />
           </div>
         );
      }

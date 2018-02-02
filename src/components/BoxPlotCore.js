@@ -29,21 +29,19 @@ class BoxPlotCore extends Component {
     //clear node
     select(node).html("");
 
-    let boxPlotData = this.props.boxPlotData;
-    let groups = this.props.groups;
+    let groupInfos = this.props.groupInfos;
+    let groupKeys = this.props.groupKeys;
     let minY = this.props.minY;
     let maxY = this.props.maxY;
 
-    //const { boxPlotData, groups, minY, maxY  } = this.formatDataForD3();
-
     //create color scale
     let colorScale = scaleOrdinal(schemeAccent)
-      .domain(groups);
-    boxPlotData.forEach( (rec) => {
+      .domain(groupKeys);
+    groupInfos.forEach( (rec) => {
       rec["color"] = colorScale(rec["group"]);
     });
 
-    console.log(boxPlotData)
+    console.log(groupInfos)
 
     //set sizes of plot and margin
     const totalWidth = this.props.width;
@@ -59,7 +57,7 @@ class BoxPlotCore extends Component {
 
     //define axes
     const xScale = scaleBand()
-      .domain(groups)
+      .domain(groupKeys)
       .rangeRound([0, width])
       .padding(0)
 
@@ -82,7 +80,7 @@ class BoxPlotCore extends Component {
 
       // Draw the box plot vertical lines
     g.selectAll(".verticalLines")
-      .data(boxPlotData)
+      .data(groupInfos)
       .enter()
       .append("line")
       .attr("x1", function(datum) {
@@ -142,7 +140,7 @@ class BoxPlotCore extends Component {
 
     //draw rectangles
     g.selectAll("rect")
-      .data(boxPlotData)
+      .data(groupInfos)
       .enter()
       .append("rect")
       .attr("width", barWidth)
@@ -172,7 +170,7 @@ class BoxPlotCore extends Component {
       .on('mouseout', boxPlotToolTip.hide);
 
     //draw outliers
-    g.selectAll(".outliers").data(boxPlotData).enter().selectAll(".outliers")
+    g.selectAll(".outliers").data(groupInfos).enter().selectAll(".outliers")
       .data(function(d, i) {
         return d.outliers;
       }).enter().append("circle")
@@ -216,7 +214,7 @@ class BoxPlotCore extends Component {
 
       // Draw the whiskers at the min for this series
       g.selectAll(".whiskers")
-        .data(boxPlotData)
+        .data(groupInfos)
         .enter()
         .append("line")
         .attr("x1", lineConfig.x1)
