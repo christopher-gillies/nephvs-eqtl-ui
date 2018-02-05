@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Card from './Card'
-import BoxPlot from './BoxPlot'
+//import BoxPlot from './BoxPlot'
+import BoxPlotCore from './BoxPlotCore'
 
 class GeneAndVariantDetail extends Component {
 
@@ -28,6 +29,7 @@ class GeneAndVariantDetail extends Component {
 
   render() {
     const variantDetail = this.props.variantDetail;
+    const boxPlotMeta = variantDetail.boxPlotMeta;
 
     let pValFormat = null;
     if(variantDetail.pVal !== null && variantDetail.pVal !== undefined) {
@@ -39,13 +41,14 @@ class GeneAndVariantDetail extends Component {
     }
     console.log(this.props)
 
-    let dataForBoxPlot = [];
+    //let dataForBoxPlot = [];
     const allelesStr = [
       variantDetail.variantRef + "/" + variantDetail.variantRef + " (Coded: 0)",
       variantDetail.variantRef + "/" + variantDetail.variantAlt + " (Coded: 1)",
       variantDetail.variantAlt + "/" + variantDetail.variantAlt + " (Coded: 2)"
     ]
 
+    /*
     if(variantDetail.exprAndGtForSubs) {
       dataForBoxPlot = variantDetail.exprAndGtForSubs.map( d => {
 
@@ -54,6 +57,7 @@ class GeneAndVariantDetail extends Component {
         }
       );
     }
+    */
 
     let xlab = null;
     if(variantDetail.variantDbSNPId) {
@@ -118,13 +122,32 @@ class GeneAndVariantDetail extends Component {
       );
     }
 
+    let boxPlotRender = null;
+
+    if(boxPlotMeta) {
+      boxPlotRender = (
+        <div>
+          <BoxPlotCore groupInfos={boxPlotMeta.groupInfos}
+            groupKeys={boxPlotMeta.groupKeys} minY={boxPlotMeta.minY}
+            maxY={boxPlotMeta.maxY} boxWidth="150" width="650" height="650" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic}
+            filename={boxplotFilename} />
+          </div>
+      );
+    }
+
+
     return(
       <div className="container-fluid">
       <div className="text-center"><h3>{title}</h3></div>
 
       <div className="text-center">
+      { /*
       <BoxPlot data={dataForBoxPlot} filename={boxplotFilename}
         groupOrder={allelesStr} width="650" height="650" xlab={xlab} ylab={ylab} ylabItalic={ylabItalic} boxWidth="150"/>
+
+      */
+      }
+      { boxPlotRender }
       </div>
 
       <div className="row justify-content-start">

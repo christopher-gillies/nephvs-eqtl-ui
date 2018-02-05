@@ -133,7 +133,7 @@ class BoxPlotCore extends Component {
       .offset([-10, 0])
       .html(function(d) {
         return createParagraph("Group",d.group) +
-            createParagraph("Value",d.val);
+            createParagraph("Value",d.y);
       })
 
     svg.call(outlierToolTip);
@@ -177,7 +177,7 @@ class BoxPlotCore extends Component {
       .attr("cx", function(d) {
         return xScale(d.group) + computedBandWidth / 2 ;
       })
-      .attr("cy", function(d) { return yScale(d.val); })
+      .attr("cy", function(d) { return yScale(d.y); })
       .attr("stroke",function(d) { return colorScale(d.group); })
       .attr("fill",function(d) { return colorScale(d.group); })
       .attr("r","3")

@@ -82,8 +82,8 @@ class BoxPlot extends Component {
        });
        record["group"] = group;
        record["n"] = groupVals.length;
-       record["outliers"] = outliers.map(function(x) {
-         return { group: group, val: x}
+       record["outliers"] = outliers.map(function(y) {
+         return { group: group, y: x}
        });
        record["quartile"] = quartiles;
        record["min"] = localMin;
