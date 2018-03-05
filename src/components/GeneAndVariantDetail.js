@@ -59,12 +59,7 @@ class GeneAndVariantDetail extends Component {
     }
     */
 
-    let tissueText = null;
-    if(this.props.match.params.tissue === "tub" || this.props.match.params.tissue === "tube") {
-      tissueText = "tubulointerstitium";
-    } else {
-      tissueText = "glomerulus";
-    }
+
 
     let xlab = null;
     if(variantDetail.variantDbSNPId) {
@@ -76,15 +71,27 @@ class GeneAndVariantDetail extends Component {
     let ylab = null;
     let ylabItalic = "";
 
+    let tissueTextExpr = null;
+    if(this.props.match.params.tissue === "tub" || this.props.match.params.tissue === "tube") {
+      tissueTextExpr = "tubulointerstitial";
+    } else {
+      tissueTextExpr = "glomerular";
+    }
+
     if(variantDetail.geneSymbol) {
-      ylab = "Rank normalized, adjusted " + tissueText + " expression for ";
+      ylab = "Rank normalized, adjusted " + tissueTextExpr + " expression for ";
       ylabItalic = variantDetail.geneSymbol;
     } else {
-      ylab = "Rank normalized, adjusted " + tissueText + " expression for " + variantDetail.geneEntrezId;
+      ylab = "Rank normalized, adjusted " + tissueTextExpr + " expression for " + variantDetail.geneEntrezId;
     }
 
     let title = null;
-
+    let tissueText = null;
+    if(this.props.match.params.tissue === "tub" || this.props.match.params.tissue === "tube") {
+      tissueText = "tubulointerstitium";
+    } else {
+      tissueText = "glomerulus";
+    }
     if(variantDetail.variantDbSNPId && variantDetail.geneSymbol) {
       title = (<span> Gene and variant detail for <i> {variantDetail.geneSymbol} </i> and {variantDetail.variantDbSNPId} in {tissueText}</span>);
     } else if(variantDetail.geneSymbol) {
