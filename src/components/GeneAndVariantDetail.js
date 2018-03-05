@@ -59,6 +59,13 @@ class GeneAndVariantDetail extends Component {
     }
     */
 
+    let tissueText = null;
+    if(this.props.match.params.tissue === "tub" || this.props.match.params.tissue === "tube") {
+      tissueText = "tubulointerstitium";
+    } else {
+      tissueText = "glomerulus";
+    }
+
     let xlab = null;
     if(variantDetail.variantDbSNPId) {
         xlab = "Genotypes for " + variantDetail.variantDbSNPId;
@@ -70,19 +77,14 @@ class GeneAndVariantDetail extends Component {
     let ylabItalic = "";
 
     if(variantDetail.geneSymbol) {
-      ylab = "Rank normalized, adjusted gene expression for ";
+      ylab = "Rank normalized, adjusted " + tissueText + " expression for ";
       ylabItalic = variantDetail.geneSymbol;
     } else {
-      ylab = "Rank normalized adjusted, gene expression for " + variantDetail.geneEntrezId;
+      ylab = "Rank normalized, adjusted " + tissueText + " expression for " + variantDetail.geneEntrezId;
     }
 
     let title = null;
-    let tissueText = null;
-    if(this.props.match.params.tissue === "tub" || this.props.match.params.tissue === "tube") {
-      tissueText = "tubulointerstitium";
-    } else {
-      tissueText = "glomerulus";
-    }
+
     if(variantDetail.variantDbSNPId && variantDetail.geneSymbol) {
       title = (<span> Gene and variant detail for <i> {variantDetail.geneSymbol} </i> and {variantDetail.variantDbSNPId} in {tissueText}</span>);
     } else if(variantDetail.geneSymbol) {
