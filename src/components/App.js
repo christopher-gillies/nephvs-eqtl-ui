@@ -10,6 +10,7 @@ import SearchFormState from '../containers/SearchFormState'
 import SearchResultState from '../containers/SearchResultState'
 import GeneAndVariantDetailState from '../containers/GeneAndVariantDetailState'
 import About from './About'
+import Terms from './Terms'
 import Help from './Help'
 import GeneSummaryState from '../containers/GeneSummaryState'
 
@@ -29,10 +30,11 @@ class App extends Component {
     return (
       <Router>
       <div>
-        <HeaderState title="NephVS eQTL Browser" />
+        <HeaderState title="NephQTL: The NephVS eQTL Browser" />
         <div className="container">
             <Route exact path="/" render={SearchFormPage}/>
             <Route path="/about" component={About}/>
+            <Route path="/terms" component={Terms}/>
             <Route path="/help" component={Help}/>
             <Route path="/geneSummary" component={GeneSummaryState}/>
             <Route path={`/searchResult/:query`} component={SearchResultState}/>

@@ -127,7 +127,7 @@ class SearchForm extends Component {
 
     let heading = (
       <div className="text-center m-3">
-        <h3>Welcome to NephVS eQTL Browser!</h3>
+        <h3>Welcome to NephQTL!</h3>
       </div>
     );
 
