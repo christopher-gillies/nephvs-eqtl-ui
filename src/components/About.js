@@ -277,9 +277,9 @@ class About extends Component {
       </Card>
 
 
-      <Card title="Download Full matrix eQTL results (Coming soon...)" size="col-lg">
-        <p>You can download the tubulointerstitial Matrix eQTL results <a onClick={this.handleLinkClick} href="_blank">here.</a></p>
-        <p>You can download the glomerulus Matrix eQTL results <a onClick={this.handleLinkClick} href="_blank">here.</a></p>
+      <Card title="Download Full matrix eQTL results" size="col-lg">
+        <p>You can download the glomerulus and tubulointerstitial Matrix eQTL results <a onClick={this.handleLinkClick} href="https://umich.box.com/s/6jrvgmdh0ppwqvgriuvijiau0xcb4ohm">here.</a></p>
+
       </Card>
 
 
