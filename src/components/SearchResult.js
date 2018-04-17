@@ -329,7 +329,7 @@ class SearchResult extends Component {
       let DAPResultTable = [];
       let tissueRes = null;
       //Only do this if the dapResult is available
-      if(this.props.dapResult) {
+      if(this.props.dapResult && this.props.dapResult.tissues[tissue]) {
         tissueRes = this.props.dapResult.tissues[tissue];
         tissueRes.clusters.forEach( (cluster) => {
           cluster.variants.forEach( (variant ) => {
