@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Card from './Card'
 //import BoxPlot from './BoxPlot'
 import BoxPlotCore from './BoxPlotCore'
+import GTExService from '../services/GTExService'
 
 class GeneAndVariantDetail extends Component {
 
@@ -21,6 +22,12 @@ class GeneAndVariantDetail extends Component {
     console.log(nextProps)
   }
 
+
+  handleLinkClick = (e) => {
+    e.preventDefault()
+    window.open(e.target.href)
+  }
+
   afFormatter = (af) => {
     if(af) {
       return (af * 100).toPrecision(3) + "%"
@@ -30,6 +37,7 @@ class GeneAndVariantDetail extends Component {
   render() {
     const variantDetail = this.props.variantDetail;
     const boxPlotMeta = variantDetail.boxPlotMeta;
+    const gtexSerivce = new GTExService();
 
     let pValFormat = null;
     if(variantDetail.pVal !== null && variantDetail.pVal !== undefined) {
@@ -144,6 +152,23 @@ class GeneAndVariantDetail extends Component {
       );
     }
 
+    /*****************
+    Update 4-17-2018
+    Add GTExLink for rsids
+    ******************/
+
+    let gtexLink = null;
+    if(variantDetail.variantDbSNPId) {
+      gtexLink = (
+        <span>
+        {variantDetail.variantDbSNPId} <a href={gtexSerivce.buildUrl(variantDetail.variantDbSNPId)} onClick={this.handleLinkClick}>
+        (View on GTEx)
+        </a>
+        </span>
+      );
+    } else {
+      gtexLink = (variantDetail.variantDbSNPId);
+    }
 
     return(
       <div className="container-fluid">
@@ -182,7 +207,7 @@ class GeneAndVariantDetail extends Component {
           <p><b>Position:</b> {variantDetail.variantPos} </p>
           <p><b>Reference:</b> {variantDetail.variantRef} </p>
           <p><b>Alternative:</b> {variantDetail.variantAlt}</p>
-          <p><b>dbSNP:</b> {variantDetail.variantDbSNPId} </p>
+          <p><b>dbSNP:</b> { gtexLink } </p>
           <p><b>Number of reference {!isX ? "homozygotes" : "homozygotes/hemizygotes"}:</b> {allelesStr[0]} = {variantDetail.homRef} </p>
           <p><b>Number of heterozygotes:</b> {allelesStr[1]} = {variantDetail.het} </p>
           <p><b>Number of alternative {!isX ? "homozygotes" : "homozygotes/hemizygotes"} :</b> {allelesStr[2]} = {variantDetail.homAlt} </p>
